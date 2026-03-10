@@ -1,0 +1,47 @@
+/* Import Tailwind */
+@import "tailwindcss";
+
+/* Plugin */
+@plugin "daisyui";
+
+/* Source paths */
+@source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
+@source "../../storage/framework/views/*.php";
+@source "../**/*.blade.php";
+
+/* Theme customization */
+@theme {
+    --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+    --color-primary: #018B3E;
+    --color-secondary: #F6CB04;
+    --color-background-light: #F6F4F7;
+    --color-background-dark: #0f2318;
+}
+
+/* DaisyUI config */
+@plugin "daisyui" {
+    themes: light;
+}
+
+/* CSS Variables untuk DaisyUI */
+:root {
+    --p: 1 139 62;      /* Primary: #018B3E */
+    --pc: 255 255 255;  /* Primary Content: Putih */
+    --s: 246 203 4;     /* Secondary: #F6CB04 */
+    --sc: 31 41 55;     /* Secondary Content: Gelap */
+    --b1: 255 255 255;  /* Base 100: Putih */
+    --b2: 246 244 247;  /* Base 200: Background Light */
+    --rounded-box: 1rem;
+    --rounded-btn: 0.5rem;
+}
+
+/* Base styles */
+@layer base {
+    body {
+        @apply font-sans bg-background-light text-slate-800 antialiased;
+    }
+    
+    .dark body {
+        @apply bg-background-dark text-slate-100;
+    }
+}
