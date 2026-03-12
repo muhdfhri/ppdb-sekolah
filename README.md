@@ -1,59 +1,104 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Aplikasi PPDB (Penerimaan Peserta Didik Baru) SMK
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 1. Pendahuluan
+Dokumen ini merupakan hasil analisis dan ringkasan pengujian (QA Analyst Report) terhadap sistem Penerimaan Peserta Didik Baru (PPDB) Sekolah Menengah Kejuruan (SMK) yang dibangun. Di dalam dokumen ini dipaparkan analisis menyeluruh mengenai Tech Stack yang digunakan, Alur Bisnis (Business Flow) dari pendaftaran hingga penerimaan, serta ringkasan fitur lengkap yang tersedia pada sistem, baik di sisi Siswa/Pendaftar maupun sisi Administrator.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 2. Tech Stack yang Digunakan
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Proyek web PPDB ini secara konsisten dibangun menggunakan teknologi modern yang sangat bergantung pada ekosistem **TALL Stack** (Tailwind, Alpine, Laravel, Livewire) plus integrasi komponen UI siap pakai.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Backend (Server-Side)
+- **Framework Utama:** Laravel v12.0
+- **Bahasa Pemrograman:** PHP ^8.2
+- **Database ORM:** Eloquent ORM (Mendukung MySQL / PostgreSQL / SQLite)
+- **Sistem Templating Engine:** Blade
 
-## Learning Laravel
+### Frontend (Client-Side)
+- **Framework UI Reaktif:** Livewire v4.2 (SSR yang terintegrasi secara seamless dengan Laravel)
+- **JavaScript Framework (Lightweight):** Alpine.js v3.15.8 (Menangani state management & UI interaction di level DOM)
+- **CSS Framework:** Tailwind CSS v4.2.1
+- **Komponen UI library:** DaisyUI v5.5.19 (Berbasis Tailwind, mempercepat pembuatan UI yang konsisten)
+- **Bundler Asset:** Vite v7.0.7 (dikombinasikan dengan `laravel-vite-plugin`)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Library & Package Tambahan Utama
+- **Generasi Dokumen/Laporan (PDF):** `barryvdh/laravel-dompdf` (^3.1)
+- **Ekspor/Impor Spreadsheet (Excel):** `phpoffice/phpspreadsheet` (^5.5)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 3. Alur Bisnis (Business Flow)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Sistem PPDB ini dirancang menggunakan alur bertahap (*Wizard-based Registration*) untuk memudahkan calon siswa dalam mendaftar dan meminimalisir kesalahan input data.
 
-### Premium Partners
+### A. Alur Pendaftaran Siswa (Pendaftar)
+Kondisi Pre-syarat: Calon siswa harus memilih **Periode Pendaftaran** yang berstatus Aktif/Buka.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+1. **Registrasi Akun:** Calon siswa membuat akun pada sistem.
+2. **Step 1 - Data Pribadi:** Melengkapi Nomor Induk Kependudukan (NIK), nama lengkap, tempat/tanggal lahir, jenis kelamin, agama, alamat domisili, dan kontak (Email/No Telp).
+3. **Step 2 - Sekolah Asal:** Melengkapi detil sekolah sebelumnya seperti Nama Sekolah Asal, Alamat, Tahun Lulus, NISN (Nomor Induk Siswa Nasional), dan Rata-rata Nilai Rapor.
+4. **Step 3 - Data Orang Tua:** Memasukkan identitas Ayah dan Ibu, meliputi NIK, Tempat/Tanggal Lahir, Pekerjaan, Estimasi Penghasilan, dan Kontak/Alamat.
+5. **Step 4 - Pemilihan Jurusan:** Calon siswa diwajibkan memilih **Jurusan Utama**, dan diberikan opsi opsional untuk memilih **Jurusan Cadangan** (*Pilihan 2*).
+6. **Step 5 - Unggah Dokumen:** Mengunggah file berkas digital dengan validasi format/ukuran. Dokumen yang dibutuhkan:
+    - Ijazah / SKL
+    - Kartu Keluarga (KK)
+    - Akte Kelahiran
+    - Pas Foto
+    - Bukti Pembayaran (Pendaftaran)
+    - Kartu Indonesia Pintar (KIP) — *Opsional*
+7. **Finalisasi & Cetak Bukti Pendaftaran:** Setelah semua dokumen terunggah penuh, status pendaftaran menjadi `Menunggu Verifikasi`. Siswa dapat mengunduh dan mencetak form pendaftaran sebagai bukti fisik.
 
-## Contributing
+### B. Flow Status Penerimaan (State Machine Pendaftaran)
+Sistem menggunakan siklus hidup status Pendaftaran berikut:
+- `Draft` → Baru mulai mendaftar dan belum menuntaskan Step 1-5.
+- `Menunggu Pembayaran` → Administrasi awal (tergantung setup pembayaran admin).
+- `Menunggu Verifikasi` → Form disubmit dan dokumen selesai diunggah, menunggu pihak sekolah.
+- `Terverifikasi` → Dokumen/Administrasi sudah divalidasi sah oleh pihak admin sekolah.
+- `Diterima` / `Ditolak` / `Cadangan` → Merupakan keputusan akhir rekam jejak seleksi siswa.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### C. Alur Verifikasi Admin
+1. Admin memonitor dashboard `Pendaftar`.
+2. Admin mengecek kelengkapan data vs dokumen pendaftar.
+3. Melalui modul **Verifikasi**, admin akan menyetujui (valid) atau menolak (invalid) dokumen-dokumen tadi.
+4. Setelah valid, admin dapat mengubah status pendaftaran final (*Terima / Tolak / Cadangan*) bergantung dari perankingan dan kapasitas kuota jurusan.
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 4. Daftar Fitur Lengkap Sistem (System Features)
 
-## Security Vulnerabilities
+### A. Fitur Publik (Landing Page)
+- **Halaman Muka (Homepage):** Informasi sekolah, jurusan yang tersedia.
+- **Papan Pengumuman:** Menampilkan portal informasi secara publik untuk dibaca pengunjung non-login.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### B. Fitur Sisi Pendaftar (Calon Siswa)
+- **Autentikasi:** Mendaftar, Login, dan Logout akun calon siswa.
+- **Wizard Pendaftaran bertahap (Multi-step form):**
+  - Form Data Diri (Data Pribadi)
+  - Form Riwayat Sekolah (Sekolah Asal)
+  - Form Identitas Wali (Data Orang Tua)
+  - Dropdown Pemilihan Jurusan (Pilihan 1 & 2)
+  - Upload Module (File Upload untuk berkas & dokumen digital)
+- **Cetak Bukti Registrasi:** Export detil pendaftaran siswa final menjadi format yang siap diprint.
+- **Dashboard Siswa:**
+  - Status Realtime (tracking proses pendaftaran & seleksi).
+  - Info Pengumuman spesifik dari Sekolah.
+  - Halaman Profil pengguna.
 
-## License
+### C. Fitur Sisi Administrator / Sekolah
+- **Dashboard Admin Utama:** Menampilkan widget statistik pendaftaran (Total Kuota, Pendaftar Valid, Jurusan terfavorit, dll).
+- **Manajemen Pendaftar:**
+  - *Data Table* melihat list seluruh pendaftar, pencarian, & filter.
+  - Aksi langsung pengubahan Status Kelulusan (Terima, Tolak, Kembalikan sebagai Cadangan).
+- **Modul Verifikasi Dokumen:** Meninjau (Preview) dokumen Ijazah, KK, dll dan memberi status verifikasi kelayakan terhadap setiap berkas.
+- **Manajemen Jurusan:** (CRUD) Menambahkan jurusan, menonaktifkan, edit informasi.
+- **Manajemen Pengumuman (CMS Mini):** Membuat konten pengumuman/berita pendaftaran (Create, Edit, Hapus, Toggle Publish) bagi publik dan internal.
+- **Manajemen Pengaturan & Preferensi PPDB:**
+  - CRUD Periode Tahun Ajaran (Buka / Tutup pendaftaran).
+  - Manajemen Penentuan Kuota Daya Tampung per jurusan.
+- **Modul Laporan (Export Tools):**
+  - Export Database Pendaftar Lengkap menjadi **Excel** (`.xlsx`).
+  - Laporan Summary PDF.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+&copy; 2026 WOKA. All rights reserved.

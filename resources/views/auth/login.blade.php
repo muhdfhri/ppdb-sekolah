@@ -13,8 +13,9 @@
                 <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(1,139,62,0.2), transparent);">
                 </div>
                 <div class="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
-                    <div class="bg-white p-3 rounded-full shadow-md mb-2">
-                        <span class="material-symbols-outlined text-4xl" style="color: #018B3E;">school</span>
+                    <div class="bg-white p-3 rounded-full shadow-md mb-2 overflow-hidden">
+                        <img src="{{ asset('images/logo-smk.png') }}" alt="Logo SMK NU II Medan"
+                            class="w-10 h-10 object-cover rounded-full">
                     </div>
                 </div>
                 <div class="absolute bottom-0 left-0 w-full h-16"
@@ -65,7 +66,7 @@
                                 style="accent-color: #018B3E;">
                             <span class="text-sm" style="color: #3a5a46;">Ingat saya</span>
                         </label>
-                        <a href="#" class="text-sm font-medium hover:underline" style="color: #018B3E;">Lupa password?</a>
+                        <!-- <a href="#" class="text-sm font-medium hover:underline" style="color: #018B3E;">Lupa password?</a> -->
                     </div>
 
                     {{-- Submit --}}

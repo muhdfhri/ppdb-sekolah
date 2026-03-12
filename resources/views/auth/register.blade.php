@@ -13,20 +13,9 @@
                 <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(1,139,62,0.2), transparent);">
                 </div>
                 <div class="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
-                    <div class="bg-white p-3 rounded-full shadow-md mb-2">
-                        <svg class="w-8 h-8" style="color: #018B3E;" fill="none" viewBox="0 0 48 48"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <g clip-path="url(#clip0_6_535)">
-                                <path clip-rule="evenodd"
-                                    d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z"
-                                    fill="currentColor" fill-rule="evenodd"></path>
-                            </g>
-                            <defs>
-                                <clipPath id="clip0_6_535">
-                                    <rect fill="white" height="48" width="48"></rect>
-                                </clipPath>
-                            </defs>
-                        </svg>
+                    <div class="bg-white p-3 rounded-full shadow-md mb-2 overflow-hidden">
+                        <img src="{{ asset('images/logo-smk.png') }}" alt="Logo SMK NU II Medan"
+                            class="w-8 h-8 object-cover rounded-full">
                     </div>
                 </div>
                 <div class="absolute bottom-0 left-0 w-full h-16"
