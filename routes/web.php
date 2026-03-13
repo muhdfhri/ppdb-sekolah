@@ -164,3 +164,7 @@ Route::middleware(['auth', 'admin'])
         });
 
     });
+
+Route::fallback(function () {
+    return response()->view('404', [], 404);
+});
