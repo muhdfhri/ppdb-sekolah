@@ -97,7 +97,7 @@
                         </div>
                         <div>
                             <p class="text-sm font-semibold text-slate-800 dark:text-white">Publish Sekarang</p>
-                            <p class="text-xs text-slate-400">Langsung tampil ke calon siswa</p>
+                            <p class="text-xs text-slate-400">Langsung tampil ke pendaftar</p>
                         </div>
                     </div>
                     <div class="relative shrink-0">
@@ -110,7 +110,7 @@
                 </label>
 
                 <p class="text-xs text-slate-400 leading-relaxed">
-                    Jika dinonaktifkan, pengumuman akan tersimpan sebagai <strong>Draft</strong> dan tidak terlihat oleh calon siswa.
+                    Jika dinonaktifkan, pengumuman akan tersimpan sebagai <strong>Draft</strong> dan tidak terlihat oleh pendaftar.
                 </p>
 
             </div>

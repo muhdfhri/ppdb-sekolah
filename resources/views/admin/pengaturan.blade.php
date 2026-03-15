@@ -1,13 +1,13 @@
 @extends('layouts.admin')
 
-@section('title', 'Pengaturan PPDB')
+@section('title', 'Periode PPDB')
 
 @section('content')
 
 {{-- ── Page Header ──────────────────────────────────────── --}}
 <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
     <div>
-        <h2 class="text-3xl font-extrabold tracking-tight">Pengaturan PPDB</h2>
+        <h2 class="text-3xl font-extrabold tracking-tight">Periode PPDB</h2>
         <p class="text-slate-500 mt-1">Konfigurasi periode dan jurusan penerimaan siswa baru</p>
     </div>
 </div>

@@ -1,14 +1,14 @@
 {{-- resources/views/admin/pengaturan/index.blade.php --}}
 @extends('layouts.admin')
 
-@section('title', 'Pengaturan PPDB')
+@section('title', 'Periode PPDB')
 
 @section('content')
 
     {{-- Page Header --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-            <h2 class="text-3xl font-extrabold tracking-tight">Pengaturan PPDB</h2>
+            <h2 class="text-3xl font-extrabold tracking-tight">Periode PPDB</h2>
             <p class="text-slate-500 mt-1">Kelola periode pendaftaran dan kuota jurusan</p>
         </div>
         <a href="{{ route('admin.pengaturan.periode.create') }}"

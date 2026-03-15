@@ -15,14 +15,14 @@ class AdminSeeder extends Seeder
             ['email' => 'admin@smknu2medan.sch.id'],
             [
                 'nama_lengkap' => 'Admin Utama',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('Password'),
                 'role' => 'admin',
             ]
         );
 
         $this->command->info('✓ Akun admin berhasil dibuat.');
         $this->command->line('  Email    : admin@smknu2medan.sch.id');
-        $this->command->line('  Password : password');
+        $this->command->line('  Password : Password');
         $this->command->warn('  Segera ganti password setelah login pertama!');
     }
 }

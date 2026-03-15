@@ -26,7 +26,7 @@
             <nav class="flex items-center gap-2 text-xs text-slate-400 mb-2">
                 <a href="{{ route('admin.dashboard') }}" class="hover:text-primary transition-colors">Dashboard</a>
                 <span class="material-symbols-outlined text-sm">chevron_right</span>
-                <a href="{{ route('admin.pendaftar.index') }}" class="hover:text-primary transition-colors">Calon Siswa</a>
+                <a href="{{ route('admin.pendaftar.index') }}" class="hover:text-primary transition-colors">Pendaftar</a>
                 <span class="material-symbols-outlined text-sm">chevron_right</span>
                 <span class="text-slate-600 font-semibold">Detail</span>
             </nav>
@@ -38,11 +38,6 @@
                 class="flex items-center gap-2 px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                 <span class="material-symbols-outlined text-lg">arrow_back</span>
                 Kembali
-            </a>
-            <a href="#" onclick="window.print()"
-                class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
-                <span class="material-symbols-outlined text-lg">print</span>
-                Cetak
             </a>
         </div>
     </div>
@@ -194,7 +189,8 @@
                                 @foreach($ortuFields as $field)
                                     <div class="{{ ($field['full'] ?? false) ? 'sm:col-span-2' : '' }}">
                                         <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                                            {{ $field['label'] }}</p>
+                                            {{ $field['label'] }}
+                                        </p>
                                         <p class="text-sm font-semibold text-slate-700 dark:text-slate-300">{{ $field['value'] }}
                                         </p>
                                     </div>
@@ -292,7 +288,7 @@
                     @php
                         $buktiPembayaran = $pendaftaran->dokumen->where('jenis_dokumen', 'bukti_pembayaran')->first();
                     @endphp
-                    
+
                     @if($buktiPembayaran)
                         <div class="space-y-4">
                             {{-- Status Upload --}}
@@ -319,34 +315,18 @@
                                 </p>
                             </div>
 
-                            {{-- Status Verifikasi --}}
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-semibold text-slate-500">Status Verifikasi</span>
-                                @if($buktiPembayaran->status_verifikasi == 'valid')
-                                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-bold flex items-center gap-1">
-                                        <span class="size-1.5 bg-green-500 rounded-full"></span>
-                                        Terverifikasi
+                            {{-- Info File --}}
+                            <div class="p-4 bg-slate-50 dark:bg-slate-800 rounded-xl">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs font-bold text-slate-500">Nama File</span>
+                                    <span class="text-[10px] text-slate-400">
+                                        {{ round($buktiPembayaran->ukuran_file / 1024, 2) }} KB
                                     </span>
-                                @elseif($buktiPembayaran->status_verifikasi == 'tidak_valid')
-                                    <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-[10px] font-bold flex items-center gap-1">
-                                        <span class="size-1.5 bg-red-500 rounded-full"></span>
-                                        Tidak Valid
-                                    </span>
-                                @else
-                                    <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-[10px] font-bold flex items-center gap-1">
-                                        <span class="size-1.5 bg-yellow-500 rounded-full"></span>
-                                        Menunggu
-                                    </span>
-                                @endif
-                            </div>
-
-                            {{-- Catatan Admin (jika ada) --}}
-                            @if($buktiPembayaran->catatan)
-                                <div class="p-3 bg-yellow-50 dark:bg-yellow-900/10 rounded-xl">
-                                    <p class="text-[10px] font-bold text-yellow-700 dark:text-yellow-400 mb-1">Catatan:</p>
-                                    <p class="text-xs text-slate-600 dark:text-slate-400">{{ $buktiPembayaran->catatan }}</p>
                                 </div>
-                            @endif
+                                <p class="text-sm font-semibold text-slate-700 dark:text-slate-300 break-all">
+                                    {{ $buktiPembayaran->nama_file }}
+                                </p>
+                            </div>
 
                             {{-- Tombol Aksi --}}
                             <div class="flex gap-2 pt-2">
@@ -396,7 +376,8 @@
                                     <p class="text-[10px] text-slate-400 mt-1 italic">"{{ $log->catatan }}"</p>
                                 @endif
                                 <p class="text-[10px] text-slate-300 mt-1">
-                                    {{ $log->created_at ? $log->created_at->translatedFormat('d M Y H:i') : '-' }}</p>
+                                    {{ $log->created_at ? $log->created_at->translatedFormat('d M Y H:i') : '-' }}
+                                </p>
                             </div>
                         </div>
                     @empty

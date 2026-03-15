@@ -1,13 +1,13 @@
 @extends('layouts.admin')
 
-@section('title', 'Data Calon Siswa')
+@section('title', 'Data Pendaftar')
 
 @section('content')
 
     {{-- ── Page Header ──────────────────────────────────────── --}}
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-            <h2 class="text-3xl font-extrabold tracking-tight">Calon Siswa</h2>
+            <h2 class="text-3xl font-extrabold tracking-tight">Pendaftar</h2>
             <p class="text-slate-500 mt-1">Kelola seluruh data pendaftar PPDB</p>
         </div>
     </div>

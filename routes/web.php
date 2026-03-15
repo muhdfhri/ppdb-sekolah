@@ -85,9 +85,11 @@ Route::middleware(['auth', 'siswa'])
             Route::post('/step/5', [PendaftaranController::class, 'step5Store'])->name('step5.store');
 
             Route::get('/cetak', [PendaftaranController::class, 'cetak'])->name('cetak');
+            Route::get('/cetak/pdf', [PendaftaranController::class, 'cetakPdf'])->name('cetak.pdf');
 
             Route::post('/pilih-periode', [PendaftaranController::class, 'pilihPeriode'])->name('pilih-periode');
 
+            Route::get('/riwayat', [PendaftaranController::class, 'riwayat'])->name('riwayat');
         });
 
     });
@@ -107,12 +109,21 @@ Route::middleware(['auth', 'admin'])
         Route::prefix('pendaftar')->name('pendaftar.')->group(function () {
             Route::get('/', [PendaftarController::class, 'index'])->name('index');
             Route::get('/{id}', [PendaftarController::class, 'show'])->name('show');
+
+            // Aksi utama
             Route::patch('/{id}/terima', [PendaftarController::class, 'terima'])->name('terima');
             Route::patch('/{id}/tolak', [PendaftarController::class, 'tolak'])->name('tolak');
             Route::patch('/{id}/verifikasi', [PendaftarController::class, 'verifikasi'])->name('verifikasi');
+
+            // Verifikasi per dokumen & pembayaran
+            Route::post('/{id}/dokumen/{dokumenId}/verifikasi', [PendaftarController::class, 'verifikasiDokumen'])->name('verifikasi-dokumen');
+            Route::post('/{id}/pembayaran/verifikasi', [PendaftarController::class, 'verifikasiPembayaran'])->name('verifikasi-pembayaran');
+
+            // Catatan admin
+            Route::post('/{id}/catatan', [PendaftarController::class, 'updateCatatan'])->name('catatan');
         });
 
-        // ── Verifikasi Dokumen ───────────────────────────────
+        // ── Verifikasi Dokumen (halaman tersendiri) ──────────
         Route::prefix('verifikasi')->name('verifikasi.')->group(function () {
             Route::get('/', [VerifikasiController::class, 'index'])->name('index');
             Route::post('/dokumen/{id}', [VerifikasiController::class, 'verifikasiDokumen'])->name('dokumen');
@@ -145,11 +156,10 @@ Route::middleware(['auth', 'admin'])
             Route::patch('/{id}/toggle', [JurusanController::class, 'toggleActive'])->name('toggle');
             Route::delete('/{id}', [JurusanController::class, 'destroy'])->name('destroy');
         });
+
         // ── Pengaturan ───────────────────────────────────────
         Route::prefix('pengaturan')->name('pengaturan.')->group(function () {
             Route::get('/', [PengaturanController::class, 'index'])->name('index');
-
-            // ROUTE UNTUK UPDATE PENGATURAN PPDB (YANG HILANG)
             Route::put('/update', [PengaturanController::class, 'update'])->name('update');
 
             Route::get('/periode/create', [PengaturanController::class, 'createPeriode'])->name('periode.create');

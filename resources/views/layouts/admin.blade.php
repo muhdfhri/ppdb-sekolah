@@ -109,8 +109,7 @@
                     <span
                         class="material-symbols-outlined {{ request()->routeIs('admin.pendaftar.*') ? 'text-primary' : '' }}">person_add</span>
                     <span
-                        class="text-sm font-{{ request()->routeIs('admin.pendaftar.*') ? 'semibold' : 'medium' }}">Calon
-                        Siswa</span>
+                        class="text-sm font-{{ request()->routeIs('admin.pendaftar.*') ? 'semibold' : 'medium' }}">Pendaftar</span>
                 </a>
 
                 {{-- ★ BARU: Pengumuman --}}
@@ -136,9 +135,9 @@
                     class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors
                     {{ request()->routeIs('admin.pengaturan.*') ? 'sidebar-item-active' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' }}">
                     <span
-                        class="material-symbols-outlined {{ request()->routeIs('admin.pengaturan.*') ? 'text-primary' : '' }}">settings</span>
+                        class="material-symbols-outlined {{ request()->routeIs('admin.pengaturan.*') ? 'text-primary' : '' }}">event_note</span>
                     <span
-                        class="text-sm font-{{ request()->routeIs('admin.pengaturan.*') ? 'semibold' : 'medium' }}">Pengaturan</span>
+                        class="text-sm font-{{ request()->routeIs('admin.pengaturan.*') ? 'semibold' : 'medium' }}">Periode</span>
                 </a>
 
             </nav>
@@ -183,7 +182,7 @@
                             class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
                         <input type="text" name="search" value="{{ request('search') }}"
                             class="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 outline-none"
-                            placeholder="Cari nama calon siswa atau NISN..." />
+                            placeholder="Cari nama pendaftar atau NISN..." />
                         {{-- Hidden inputs untuk mempertahankan filter lain --}}
                         @if(request('status'))
                             <input type="hidden" name="status" value="{{ request('status') }}">

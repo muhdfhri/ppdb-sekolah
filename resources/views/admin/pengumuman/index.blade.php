@@ -9,7 +9,7 @@
 <div class="flex items-center justify-between">
     <div>
         <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white">Pengumuman</h2>
-        <p class="text-sm text-slate-500 mt-0.5">Kelola pengumuman PPDB yang ditampilkan kepada calon siswa.</p>
+        <p class="text-sm text-slate-500 mt-0.5">Kelola pengumuman PPDB yang ditampilkan kepada pendaftar.</p>
     </div>
     <a href="{{ route('admin.pengumuman.create') }}"
         class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white shadow-sm transition-all hover:opacity-90"
@@ -19,12 +19,25 @@
     </a>
 </div>
 
+{{-- Flash --}}
+@if(session('success'))
+<div class="flex items-center gap-3 p-4 rounded-xl text-sm font-semibold"
+    style="background-color: rgba(1,137,62,0.08); border: 1px solid rgba(1,137,62,0.2); color: #015f2a;">
+    <span class="material-symbols-outlined text-base">check_circle</span>
+    {{ session('success') }}
+</div>
+@endif
+
 {{-- ── Stats Row ─────────────────────────────────────────── --}}
+@php
+    $published = $pengumuman->getCollection()->where('is_published', true)->count();
+    $draft     = $pengumuman->getCollection()->where('is_published', false)->count();
+@endphp
 <div class="grid grid-cols-3 gap-4">
     @foreach([
-        ['label' => 'Total Pengumuman', 'value' => $pengumuman->total(),                                                              'icon' => 'campaign',   'color' => '#01893e'],
-        ['label' => 'Dipublish',         'value' => $pengumuman->getCollection()->where('is_published', true)->count(),               'icon' => 'visibility', 'color' => '#16a34a'],
-        ['label' => 'Draft',             'value' => $pengumuman->getCollection()->where('is_published', false)->count(),              'icon' => 'edit_note',  'color' => '#64748b'],
+        ['label' => 'Total Pengumuman', 'value' => $pengumuman->total(), 'icon' => 'campaign', 'color' => '#01893e'],
+        ['label' => 'Dipublish', 'value' => $published, 'icon' => 'visibility', 'color' => '#16a34a'],
+        ['label' => 'Draft', 'value' => $draft, 'icon' => 'edit_note', 'color' => '#64748b'],
     ] as $s)
     <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 flex items-center gap-4">
         <div class="size-11 rounded-xl flex items-center justify-center text-white shrink-0"
@@ -153,12 +166,39 @@
         </table>
     </div>
 
+    {{-- Pagination --}}
     @if($pengumuman->hasPages())
     <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-800">
         {{ $pengumuman->links() }}
     </div>
     @endif
+
     @endif
+</div>
+
+{{-- ── Delete Confirm Modal ──────────────────────────────── --}}
+<div id="modal-delete" class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+    style="background-color: rgba(0,0,0,0.5);">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-sm p-6">
+        <div class="size-14 rounded-full flex items-center justify-center mx-auto mb-4"
+            style="background-color: rgba(239,68,68,0.1);">
+            <span class="material-symbols-outlined text-2xl text-red-500">warning</span>
+        </div>
+        <h3 class="text-center font-bold text-slate-900 dark:text-white text-lg">Hapus Pengumuman?</h3>
+        <p class="text-center text-slate-500 text-sm mt-2">
+            Pengumuman "<span id="modal-judul" class="font-semibold text-slate-700"></span>" akan dihapus permanen.
+        </p>
+        <div class="flex gap-3 mt-6">
+            <button onclick="closeModal()"
+                class="flex-1 py-2.5 rounded-xl font-bold text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
+                Batal
+            </button>
+            <button id="btn-confirm-delete"
+                class="flex-1 py-2.5 rounded-xl font-bold text-sm text-white bg-red-500 hover:bg-red-600 transition-colors">
+                Ya, Hapus
+            </button>
+        </div>
+    </div>
 </div>
 
 @endsection
@@ -196,76 +236,31 @@ function togglePublish(id) {
     .catch(() => alert('Gagal mengubah status. Coba lagi.'));
 }
 
-// ── Delete Modal ─────────────────────────────────────────────────
-// Modal di-inject langsung ke <body> agar tidak terkena overflow:hidden dari layout
+// ── Delete Modal ────────────────────────────────────────────────
 let deleteTargetId = null;
-
-// Buat elemen modal sekali saat DOM siap, append ke body
-document.addEventListener('DOMContentLoaded', function () {
-    const modalHTML = `
-    <div id="modal-delete-overlay"
-        style="display:none; position:fixed; inset:0; width:100vw; height:100vh;
-               background:rgba(0,0,0,0.6); backdrop-filter:blur(3px);
-               z-index:99999; align-items:center; justify-content:center; padding:1rem;">
-        <div style="background:white; border-radius:1.25rem; box-shadow:0 25px 60px rgba(0,0,0,0.25);
-                    width:100%; max-width:360px; padding:2rem;">
-            <div style="width:56px; height:56px; border-radius:50%; background:rgba(239,68,68,0.1);
-                        display:flex; align-items:center; justify-content:center; margin:0 auto 1rem;">
-                <span class="material-symbols-outlined" style="font-size:28px; color:#ef4444;">warning</span>
-            </div>
-            <h3 style="text-align:center; font-weight:800; font-size:1.1rem; color:#0f172a; margin:0 0 0.5rem;">
-                Hapus Pengumuman?
-            </h3>
-            <p style="text-align:center; color:#64748b; font-size:0.875rem; margin:0 0 1.5rem;">
-                Pengumuman "<span id="modal-judul-text" style="font-weight:700; color:#334155;"></span>"
-                akan dihapus permanen.
-            </p>
-            <div style="display:flex; gap:0.75rem;">
-                <button id="modal-btn-batal"
-                    style="flex:1; padding:0.75rem; border-radius:0.75rem; font-weight:700;
-                           font-size:0.875rem; color:#475569; background:#f1f5f9;
-                           border:none; cursor:pointer; transition:background 0.15s;"
-                    onmouseover="this.style.background='#e2e8f0';"
-                    onmouseout="this.style.background='#f1f5f9';">
-                    Batal
-                </button>
-                <button id="modal-btn-hapus"
-                    style="flex:1; padding:0.75rem; border-radius:0.75rem; font-weight:700;
-                           font-size:0.875rem; color:white; background:#ef4444;
-                           border:none; cursor:pointer; transition:background 0.15s;"
-                    onmouseover="this.style.background='#dc2626';"
-                    onmouseout="this.style.background='#ef4444';">
-                    Ya, Hapus
-                </button>
-            </div>
-        </div>
-    </div>`;
-
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-
-    // Event listeners
-    document.getElementById('modal-btn-batal').addEventListener('click', closeModal);
-    document.getElementById('modal-btn-hapus').addEventListener('click', function () {
-        if (deleteTargetId) {
-            document.getElementById(`delete-form-${deleteTargetId}`).submit();
-        }
-    });
-    document.getElementById('modal-delete-overlay').addEventListener('click', function (e) {
-        if (e.target === this) closeModal();
-    });
-});
 
 function confirmDelete(id, judul) {
     deleteTargetId = id;
-    document.getElementById('modal-judul-text').textContent = judul;
-    const overlay = document.getElementById('modal-delete-overlay');
-    overlay.style.display = 'flex';
+    document.getElementById('modal-judul').textContent = judul;
+    document.getElementById('modal-delete').classList.remove('hidden');
+    document.getElementById('modal-delete').classList.add('flex');
 }
 
 function closeModal() {
-    const overlay = document.getElementById('modal-delete-overlay');
-    if (overlay) overlay.style.display = 'none';
+    document.getElementById('modal-delete').classList.add('hidden');
+    document.getElementById('modal-delete').classList.remove('flex');
     deleteTargetId = null;
 }
+
+document.getElementById('btn-confirm-delete').addEventListener('click', () => {
+    if (deleteTargetId) {
+        document.getElementById(`delete-form-${deleteTargetId}`).submit();
+    }
+});
+
+// Close modal on backdrop click
+document.getElementById('modal-delete').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
 </script>
 @endpush
