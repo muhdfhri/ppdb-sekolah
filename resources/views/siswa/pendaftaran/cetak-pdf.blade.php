@@ -305,7 +305,8 @@
             <div>
                 <div class="school-name">SMK NU II Medan</div>
                 <div class="school-sub">Bukti Pendaftaran PPDB
-                    {{ $periodeInfo['tahun_ajaran'] ?? now()->year . '/' . (now()->year + 1) }}</div>
+                    {{ $periodeInfo['tahun_ajaran'] ?? now()->year . '/' . (now()->year + 1) }}
+                </div>
                 <div class="nomor-badge">{{ $pendaftaran->nomor_pendaftaran }}</div>
             </div>
             <div style="text-align:right;">
@@ -353,7 +354,8 @@
             <tr>
                 <td class="lbl">Tempat, Tgl Lahir</td>
                 <td class="val">{{ ($siswa?->tempat_lahir ?? '—') }},
-                    {{ $siswa?->tanggal_lahir?->translatedFormat('d M Y') ?? '—' }}</td>
+                    {{ $siswa?->tanggal_lahir?->translatedFormat('d M Y') ?? '—' }}
+                </td>
             </tr>
             <tr>
                 <td class="lbl">Jenis Kelamin</td>
@@ -452,8 +454,8 @@
             <div style="display:flex; justify-content:space-between; align-items:flex-end;">
                 <div class="footer-text">
                     <strong style="color:#018B3E;">SMK Swasta Nahdatul Ulama II Medan</strong><br>
-                    Jl. Sidorukun No. 100, Pulo Brayan Darat II, Medan Timur, Kota Medan 20239<br>
-                    Telp: (061) 12345678 &nbsp;|&nbsp; Email: info@smknu2medan.sch.id<br>
+                    Jl. Gaperta Ujung No.2, Tj. Gusta, Kec. Medan Helvetia, Kota Medan, Sumatera Utara 20125<br>
+                    Telp: 0812-6685-7686 &nbsp;|&nbsp; Email: smknu2medan22@gmail.com<br>
                     <br>
                     <em>Dokumen ini adalah bukti pendaftaran resmi yang sah. Harap simpan dan tunjukkan saat proses
                         verifikasi.</em><br>
