@@ -210,7 +210,7 @@
                         <div class="absolute -top-10 -right-10 w-64 h-64 rounded-full blur-3xl opacity-10" style="background-color:#018B3E;"></div>
                         <div class="absolute -bottom-10 -left-10 w-64 h-64 rounded-full blur-3xl opacity-20" style="background-color:#F6CB04;"></div>
                         <div class="relative rounded-3xl overflow-hidden shadow-2xl border-8 aspect-[4/3]"
-                            style='border-color:white; background-image:url("{{ asset('images/hero-section.png') }}"); background-size:cover; background-position:center;'>
+                            style='border-color:white; background-image:url("{{ asset('images/hero-section2.jpeg') }}"); background-size:cover; background-position:center;'>
                         </div>
                     </div>
 
