@@ -7,6 +7,7 @@ use App\Services\Admin\PendaftaranService;
 use App\Models\Pendaftaran;
 use App\Models\Jurusan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PendaftarController extends Controller
 {
@@ -71,5 +72,40 @@ class PendaftarController extends Controller
 
         return redirect()->route('admin.pendaftar.show', $id)
             ->with('success', 'Berkas terverifikasi.');
+    }
+
+    /**
+     * Hapus data pendaftaran beserta semua data terkait
+     */
+    public function destroy($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $pendaftaran = Pendaftaran::findOrFail($id);
+
+            // Cek apakah bisa dihapus
+            if (!in_array($pendaftaran->status, ['draft', 'menunggu_verifikasi', 'menunggu_pembayaran'])) {
+                return redirect()->route('admin.pendaftar.index')
+                    ->with('error', 'Pendaftaran dengan status "' . $pendaftaran->label_status . '" tidak dapat dihapus.');
+            }
+
+            $nama = $pendaftaran->siswa->nama_lengkap ?? 'Unknown';
+            $nomor = $pendaftaran->nomor_pendaftaran;
+
+            // Hapus data (cascade akan berjalan otomatis)
+            $pendaftaran->delete();
+
+            DB::commit();
+
+            return redirect()->route('admin.pendaftar.index')
+                ->with('success', "Data pendaftar {$nama} ({$nomor}) berhasil dihapus.");
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()->route('admin.pendaftar.index')
+                ->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
     }
 }

@@ -110,6 +110,9 @@ Route::middleware(['auth', 'admin'])
             Route::get('/', [PendaftarController::class, 'index'])->name('index');
             Route::get('/{id}', [PendaftarController::class, 'show'])->name('show');
 
+            // TAMBAHKAN ROUTE DELETE DI SINI
+            Route::delete('/{id}', [PendaftarController::class, 'destroy'])->name('destroy');
+
             // Aksi utama
             Route::patch('/{id}/terima', [PendaftarController::class, 'terima'])->name('terima');
             Route::patch('/{id}/tolak', [PendaftarController::class, 'tolak'])->name('tolak');

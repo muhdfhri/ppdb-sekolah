@@ -34,6 +34,8 @@
                     class="w-full py-2.5 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary">
                     <option value="">Semua Status</option>
                     <option value="draft" {{ request('status') === 'draft' ? 'selected' : '' }}>Draft</option>
+                    <option value="menunggu_pembayaran" {{ request('status') === 'menunggu_pembayaran' ? 'selected' : '' }}>
+                        Menunggu Pembayaran</option>
                     <option value="menunggu_verifikasi" {{ request('status') === 'menunggu_verifikasi' ? 'selected' : '' }}>
                         Menunggu Verifikasi</option>
                     <option value="terverifikasi" {{ request('status') === 'terverifikasi' ? 'selected' : '' }}>Terverifikasi
@@ -80,7 +82,7 @@
             $miniStats = [
                 ['label' => 'Total', 'value' => $stats['total'] ?? 0, 'color' => 'text-blue-600', 'bg' => 'bg-blue-50'],
                 ['label' => 'Draft', 'value' => $stats['draft'] ?? 0, 'color' => 'text-slate-600', 'bg' => 'bg-slate-100'],
-                ['label' => 'Verifikasi', 'value' => $stats['menunggu'] ?? 0, 'color' => 'text-orange-600', 'bg' => 'bg-orange-50'],
+                ['label' => 'Verifikasi', 'value' => $stats['menunggu_verifikasi'] ?? 0, 'color' => 'text-orange-600', 'bg' => 'bg-orange-50'],
                 ['label' => 'Diterima', 'value' => $stats['diterima'] ?? 0, 'color' => 'text-green-600', 'bg' => 'bg-green-50'],
                 ['label' => 'Ditolak', 'value' => $stats['ditolak'] ?? 0, 'color' => 'text-red-600', 'bg' => 'bg-red-50'],
             ];
@@ -119,18 +121,19 @@
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                     @forelse($pendaftaran ?? [] as $i => $p)
                         @php
-                            $nama = $p->siswa->nama_lengkap ?? $p->user->nama_lengkap;
+                            $nama = $p->siswa->nama_lengkap ?? $p->user->nama_lengkap ?? 'Tidak ada data';
                             $inisial = strtoupper(implode('', array_map(fn($w) => $w[0], array_slice(explode(' ', $nama), 0, 2))));
                             $statusConfig = [
                                 'diterima' => ['dot' => 'bg-green-500', 'text' => 'text-green-700', 'bg' => 'bg-green-50', 'label' => 'Diterima'],
                                 'ditolak' => ['dot' => 'bg-red-500', 'text' => 'text-red-700', 'bg' => 'bg-red-50', 'label' => 'Ditolak'],
-                                'menunggu_verifikasi' => ['dot' => 'bg-orange-500', 'text' => 'text-orange-700', 'bg' => 'bg-orange-50', 'label' => 'Menunggu'],
+                                'menunggu_verifikasi' => ['dot' => 'bg-orange-500', 'text' => 'text-orange-700', 'bg' => 'bg-orange-50', 'label' => 'Menunggu Verifikasi'],
+                                'menunggu_pembayaran' => ['dot' => 'bg-purple-500', 'text' => 'text-purple-700', 'bg' => 'bg-purple-50', 'label' => 'Menunggu Pembayaran'],
                                 'terverifikasi' => ['dot' => 'bg-primary', 'text' => 'text-primary', 'bg' => 'bg-primary/10', 'label' => 'Terverifikasi'],
                                 'draft' => ['dot' => 'bg-slate-300', 'text' => 'text-slate-500', 'bg' => 'bg-slate-100', 'label' => 'Draft'],
                             ];
                             $sc = $statusConfig[$p->status] ?? ['dot' => 'bg-slate-300', 'text' => 'text-slate-500', 'bg' => 'bg-slate-100', 'label' => $p->status];
                         @endphp
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors" id="row-{{ $p->id }}">
                             <td class="px-6 py-4 text-sm text-slate-400 font-medium">
                                 {{ $pendaftaran->firstItem() + $i }}
                             </td>
@@ -142,7 +145,8 @@
                                     </div>
                                     <div>
                                         <p class="text-sm font-bold">{{ $nama }}</p>
-                                        <p class="text-[10px] text-slate-400">{{ $p->siswa->tempat_lahir ?? $p->user->email }}
+                                        <p class="text-[10px] text-slate-400">
+                                            {{ $p->siswa->tempat_lahir ?? $p->user->email ?? '' }}
                                         </p>
                                     </div>
                                 </div>
@@ -151,7 +155,7 @@
                                 {{ $p->nomor_pendaftaran }}
                             </td>
                             <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
-                                {{ $p->sekolahAsal->nisn ?? '—' }}
+                                {{ $p->siswa->nisn ?? '—' }}
                             </td>
                             <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400 max-w-[160px] truncate">
                                 {{ $p->sekolahAsal->nama_sekolah ?? '—' }}
@@ -172,10 +176,26 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4">
-                                <a href="{{ route('admin.pendaftar.show', $p->id) }}"
-                                    class="p-2 text-slate-400 hover:text-primary transition-colors inline-block rounded-lg hover:bg-primary/5">
-                                    <span class="material-symbols-outlined text-lg">visibility</span>
-                                </a>
+                                <div class="flex items-center gap-1">
+                                    <a href="{{ route('admin.pendaftar.show', $p->id) }}"
+                                        class="p-2 text-slate-400 hover:text-primary transition-colors inline-block rounded-lg hover:bg-primary/5"
+                                        title="Lihat Detail">
+                                        <span class="material-symbols-outlined text-lg">visibility</span>
+                                    </a>
+                                    @if(in_array($p->status, ['draft', 'menunggu_verifikasi', 'menunggu_pembayaran']))
+                                        <button type="button"
+                                            onclick="confirmDelete({{ $p->id }}, '{{ addslashes($nama) }}', '{{ $p->nomor_pendaftaran }}')"
+                                            class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors rounded-lg"
+                                            title="Hapus Data">
+                                            <span class="material-symbols-outlined text-lg">delete</span>
+                                        </button>
+                                    @endif
+                                    <form id="delete-form-{{ $p->id }}" action="{{ route('admin.pendaftar.destroy', $p->id) }}"
+                                        method="POST" class="hidden">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @empty
@@ -199,4 +219,64 @@
         @endif
     </div>
 
+    {{-- ── Delete Confirm Modal (sama seperti pengumuman) ──────── --}}
+    <div id="modal-delete" class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+        style="background-color: rgba(0,0,0,0.5);">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-sm p-6">
+            <div class="size-14 rounded-full flex items-center justify-center mx-auto mb-4"
+                style="background-color: rgba(239,68,68,0.1);">
+                <span class="material-symbols-outlined text-2xl text-red-500">warning</span>
+            </div>
+            <h3 class="text-center font-bold text-slate-900 dark:text-white text-lg">Hapus Data Pendaftar?</h3>
+            <p class="text-center text-slate-500 text-sm mt-2">
+                Data pendaftar "<span id="modal-nama" class="font-semibold text-slate-700"></span>"<br>
+                No. Pendaftaran: <span id="modal-nomor" class="font-semibold text-slate-700"></span><br><br>
+                <span class="text-red-600 text-xs">⚠️ Semua data terkait (siswa, dokumen, pembayaran, dll) akan dihapus
+                    permanen!</span>
+            </p>
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeModal()"
+                    class="flex-1 py-2.5 rounded-xl font-bold text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
+                    Batal
+                </button>
+                <button id="btn-confirm-delete"
+                    class="flex-1 py-2.5 rounded-xl font-bold text-sm text-white bg-red-500 hover:bg-red-600 transition-colors">
+                    Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
 @endsection
+
+@push('scripts')
+    <script>
+        // ── Delete Modal (sama persis seperti pengumuman) ────────────────
+        let deleteTargetId = null;
+
+        function confirmDelete(id, nama, nomorPendaftaran) {
+            deleteTargetId = id;
+            document.getElementById('modal-nama').textContent = nama;
+            document.getElementById('modal-nomor').textContent = nomorPendaftaran;
+            document.getElementById('modal-delete').classList.remove('hidden');
+            document.getElementById('modal-delete').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-delete').classList.add('hidden');
+            document.getElementById('modal-delete').classList.remove('flex');
+            deleteTargetId = null;
+        }
+
+        document.getElementById('btn-confirm-delete').addEventListener('click', () => {
+            if (deleteTargetId) {
+                document.getElementById(`delete-form-${deleteTargetId}`).submit();
+            }
+        });
+
+        // Close modal on backdrop click
+        document.getElementById('modal-delete').addEventListener('click', function (e) {
+            if (e.target === this) closeModal();
+        });
+    </script>
+@endpush

@@ -89,6 +89,101 @@ class Pendaftaran extends Model
         return $this->hasMany(VerifikasiLog::class, 'pendaftaran_id');
     }
 
+    // ── Boot Method untuk Cascade Delete ─────────────────────
+
+    /**
+     * The "booted" method of the model.
+     * Menangani cascade delete secara otomatis
+     */
+    protected static function booted()
+    {
+        static::deleting(function ($pendaftaran) {
+            // Hapus data siswa terkait
+            if ($pendaftaran->siswa) {
+                $pendaftaran->siswa->delete();
+            }
+
+            // Hapus data sekolah asal terkait
+            if ($pendaftaran->sekolahAsal) {
+                $pendaftaran->sekolahAsal->delete();
+            }
+
+            // Hapus semua data orang tua terkait
+            if ($pendaftaran->orangTua->count() > 0) {
+                $pendaftaran->orangTua()->delete();
+            }
+
+            // Hapus semua dokumen terkait (termasuk file fisiknya)
+            if ($pendaftaran->dokumen->count() > 0) {
+                foreach ($pendaftaran->dokumen as $dokumen) {
+                    // Hapus file fisik jika ada
+                    if ($dokumen->file_path && \Storage::exists($dokumen->file_path)) {
+                        \Storage::delete($dokumen->file_path);
+                    }
+                }
+                $pendaftaran->dokumen()->delete();
+            }
+
+            // Hapus semua data pembayaran terkait
+            if ($pendaftaran->pembayaran->count() > 0) {
+                $pendaftaran->pembayaran()->delete();
+            }
+
+            // Hapus semua log verifikasi terkait
+            if ($pendaftaran->verifikasiLog->count() > 0) {
+                $pendaftaran->verifikasiLog()->delete();
+            }
+        });
+    }
+
+    // ── Tambahan Method untuk Delete dengan Validasi ────────
+
+    /**
+     * Cek apakah pendaftaran bisa dihapus
+     * Hanya status tertentu yang boleh dihapus
+     */
+    public function canBeDeleted(): bool
+    {
+        return in_array($this->status, [
+            self::STATUS_DRAFT,
+            self::STATUS_MENUNGGU_PEMBAYARAN,
+            self::STATUS_MENUNGGU_VERIFIKASI
+        ]);
+    }
+
+    /**
+     * Hapus pendaftaran beserta semua data terkait dengan validasi
+     */
+    public function deleteWithRelations(): bool
+    {
+        if (!$this->canBeDeleted()) {
+            throw new \Exception('Pendaftaran dengan status "' . $this->label_status . '" tidak dapat dihapus.');
+        }
+
+        return $this->delete();
+    }
+
+    /**
+     * Soft info sebelum hapus - untuk keperluan logging/notification
+     */
+    public function getDeleteInfo(): array
+    {
+        return [
+            'nomor_pendaftaran' => $this->nomor_pendaftaran,
+            'nama_siswa' => $this->siswa?->nama_lengkap ?? 'Tidak ada data',
+            'status' => $this->label_status,
+            'tanggal_daftar' => $this->tanggal_daftar?->format('d/m/Y'),
+            'relasi_data' => [
+                'siswa' => $this->siswa ? 'Akan dihapus' : '-',
+                'sekolah_asal' => $this->sekolahAsal ? 'Akan dihapus' : '-',
+                'orang_tua' => $this->orangTua->count(),
+                'dokumen' => $this->dokumen->count(),
+                'pembayaran' => $this->pembayaran->count(),
+                'verifikasi_log' => $this->verifikasiLog->count(),
+            ]
+        ];
+    }
+
     // ── Helpers ─────────────────────────────────────────────
 
     public function getLabelStatusAttribute(): string

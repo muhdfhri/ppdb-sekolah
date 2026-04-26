@@ -69,6 +69,14 @@
                     <span class="material-symbols-outlined">history</span>
                     <span>Riwayat Pendaftaran</span>
                 </a>
+
+                {{-- TAMBAHKAN: Kembali ke Beranda (Landing Page) --}}
+                <a href="{{ route('home') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-slate-600 hover:bg-[#018B3E]/5 mt-2">
+                    <span class="material-symbols-outlined">home</span>
+                    <span>Kembali ke Beranda</span>
+                </a>
+
                 <div class="mt-4 pt-4 border-t border-slate-200">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
@@ -139,6 +147,14 @@
                     <span class="material-symbols-outlined">history</span>
                     <span>Riwayat Pendaftaran</span>
                 </a>
+
+                {{-- TAMBAHKAN: Kembali ke Beranda (Landing Page) --}}
+                <a href="{{ route('home') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-slate-600 hover:bg-[#018B3E]/5 mt-2">
+                    <span class="material-symbols-outlined">home</span>
+                    <span>Kembali ke Beranda</span>
+                </a>
+
                 <div class="mt-4 pt-4 border-t border-slate-200">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
