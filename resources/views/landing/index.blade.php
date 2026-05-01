@@ -218,7 +218,7 @@
             </div>
         </section>
 
-        {{-- ── STATS BAR ────────────────────────────────────────────── --}}
+        <!-- {{-- ── STATS BAR ────────────────────────────────────────────── --}}
         <div class="py-8" style="background-color:#018B3E;">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white">
@@ -240,7 +240,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
                 {{-- ── PERIODE PPDB ─────────────────────────────────────────── --}}
         <section id="periode" class="py-20 relative overflow-hidden" style="background-color: #F6F4F7;">
@@ -568,8 +568,8 @@
                                 ['title'=>'Fotokopi Ijazah / SKL',          'sub'=>'Dilegalisir sebanyak 3 lembar.'],
                                 ['title'=>'Kartu Keluarga & Akte Kelahiran', 'sub'=>'Fotokopi masing-masing 2 lembar.'],
                                 ['title'=>'Pas Foto Terbaru (3x4 & 4x6)',   'sub'=>'Latar belakang merah, 4 lembar.'],
-                                ['title'=>'KPS / KIP / PKH (Opsional)',      'sub'=>'Bagi pendaftar jalur bantuan pemerintah.'],
-                            ] as $doc)
+['title'=>'Bukti Pembayaran Pendaftaran', 'sub'=>'Upload bukti pembayaran sesuai dengan biaya pada periode pendaftaran yang sedang berlangsung.'],
+                                ] as $doc)
                             <div class="flex items-start gap-4 p-4 rounded-xl" style="background-color:#F6F4F7;">
                                 <span class="material-symbols-outlined" style="color:#018B3E;">check_circle</span>
                                 <div>
@@ -588,14 +588,19 @@
                             <span class="material-symbols-outlined text-[160px]">verified_user</span>
                         </div>
                         <h4 class="text-2xl font-bold mb-4">Informasi Tambahan</h4>
-                        <ul class="space-y-4 mb-8">
-                            @foreach(['Usia maksimal 18 tahun per Juli 2026.','Tidak bertato dan tidak bertindik.','Sehat jasmani dan rohani.'] as $info)
-                            <li class="flex items-center gap-3">
-                                <span class="material-symbols-outlined" style="color:#F6CB04;">info</span>
-                                <span>{{ $info }}</span>
-                            </li>
-                            @endforeach
-                        </ul>
+                      <ul class="space-y-4 mb-8">
+                        @foreach([
+                            'Memenuhi persyaratan usia sesuai ketentuan yang berlaku.',
+                            'Bersedia mengikuti seluruh tata tertib dan ketentuan sekolah.',
+                            'Dalam kondisi sehat jasmani dan rohani untuk mengikuti kegiatan belajar.',
+                            'Bagi calon peserta didik yang memiliki <span class="font-semibold">KIP</span> dapat mendaftar.'
+                        ] as $info)
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined" style="color:#F6CB04;">info</span>
+                            <span>{!! $info !!}</span>
+                        </li>
+                        @endforeach
+                    </ul>
                         <div class="p-6 rounded-2xl border" style="background-color:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.2);">
                             <p class="text-sm font-medium mb-4">Punya pertanyaan mengenai syarat khusus jurusan?</p>
                             <a href="https://wa.me/6281266857686?text={{ urlencode('Halo admin PPDB SMK NU II Medan, saya ingin bertanya mengenai syarat khusus jurusan. Mohon informasinya. Terima kasih.') }}"
@@ -620,10 +625,10 @@
                 <div class="space-y-4">
                     @foreach([
                         ['q'=>'Kapan pendaftaran offline dilayani di sekolah?',
-                         'a'=>'Pendaftaran offline dilayani setiap hari Senin - Sabtu, pukul 08.00 s/d 15.00 WIB di Sekretariat PPDB SMK NU II Medan.',
+                         'a'=>'Pendaftaran offline dilayani setiap hari Senin - Sabtu, pukul 08.00 s/d 16.00 WIB di Sekretariat PPDB SMK NU II Medan.',
                          'open'=>true],
                         ['q'=>'Berapa biaya pendaftaran awal?',
-                         'a'=>'Biaya pendaftaran untuk tahun ajaran 2026/2027 adalah Gratis. Siswa hanya perlu membayar biaya administrasi daftar ulang jika sudah dinyatakan lulus.',
+                         'a'=>'Biaya pendaftaran/administrasi menyesuaikan dengan periode pendaftaran yang sedang berlangsung. Informasi besaran biaya akan ditampilkan pada masing-masing periode pendaftaran. Siswa diwajibkan mengikuti ketentuan biaya sesuai dengan jadwal atau gelombang pendaftaran yang berlaku.',
                          'open'=>false],
                         ['q'=>'Apakah ada beasiswa prestasi?',
                          'a'=>"Ya, kami menyediakan beasiswa penuh bagi siswa berprestasi di bidang akademik maupun non-akademik tingkat kota/provinsi, serta beasiswa khusus bagi hafidz Qur'an.",

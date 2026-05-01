@@ -44,7 +44,6 @@
             @foreach([
                 ['val'=>'semua',       'label'=>'Semua ('.$periodeTersedia->count().')'],
                 ['val'=>'berlangsung', 'label'=>'Sedang Berlangsung'],
-                ['val'=>'akan_datang', 'label'=>'Akan Datang'],
                 ['val'=>'berakhir',    'label'=>'Telah Berakhir'],
             ] as $tab)
             <button onclick="filterPeriode('{{ $tab['val'] }}')"
@@ -100,9 +99,9 @@
                         <p class="text-[10px] sm:text-xs text-slate-500">Periode Pendaftaran</p>
                     </div>
                 </div>
-                <span class="px-2 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold rounded-full {{ $sc['bg'] }} {{ $sc['text'] }} border {{ $sc['border'] }} w-fit">
+                <!-- <span class="px-2 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold rounded-full {{ $sc['bg'] }} {{ $sc['text'] }} border {{ $sc['border'] }} w-fit">
                     {{ $status == 'berlangsung' ? 'Sedang Berlangsung' : ($status == 'akan_datang' ? 'Akan Datang' : 'Telah Berakhir') }}
-                </span>
+                </span> -->
             </div>
 
             @if($status == 'berlangsung')
@@ -111,7 +110,7 @@
                 $hariTerlewat = $periode->tanggal_buka->diffInDays(now());
                 $persentase   = min(100, ($hariTerlewat / max($totalHari, 1)) * 100);
             @endphp
-            <div class="mb-4">
+            <!-- <div class="mb-4">
                 <div class="flex items-center justify-between text-[10px] sm:text-xs mb-1">
                     <span class="text-slate-500">Progress</span>
                     <span class="font-semibold" style="color:#018B3E;">{{ round($persentase) }}%</span>
@@ -119,7 +118,7 @@
                 <div class="w-full h-1.5 sm:h-2 bg-slate-100 rounded-full overflow-hidden">
                     <div class="h-full rounded-full" style="background-color:#018B3E; width:{{ $persentase }}%"></div>
                 </div>
-            </div>
+            </div> -->
             @endif
 
             <div class="grid grid-cols-2 gap-2 sm:gap-3 mb-4">

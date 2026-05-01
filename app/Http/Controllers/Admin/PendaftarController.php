@@ -20,8 +20,11 @@ class PendaftarController extends Controller
     {
         $filters = $request->only(['search', 'status', 'jurusan_id']);
         $pendaftaran = $this->pendaftaranService->buildQuery($filters)->paginate(15);
-        $stats = $this->pendaftaranService->getStats();
+        $stats = $this->pendaftaranService->getStats(); // Pastikan ini mengembalikan array yang benar
         $jurusan = Jurusan::all();
+
+        // Debug: Cek isi stats (hapus setelah memastikan berfungsi)
+        // dd($stats);
 
         return view('admin.pendaftar.index', compact('pendaftaran', 'stats', 'jurusan'));
     }
@@ -84,10 +87,10 @@ class PendaftarController extends Controller
 
             $pendaftaran = Pendaftaran::findOrFail($id);
 
-            // Cek apakah bisa dihapus
-            if (!in_array($pendaftaran->status, ['draft', 'menunggu_verifikasi', 'menunggu_pembayaran'])) {
+            // Cek apakah bisa dihapus (hanya status menunggu_verifikasi yang bisa dihapus)
+            if ($pendaftaran->status !== 'menunggu_verifikasi') {
                 return redirect()->route('admin.pendaftar.index')
-                    ->with('error', 'Pendaftaran dengan status "' . $pendaftaran->label_status . '" tidak dapat dihapus.');
+                    ->with('error', 'Pendaftaran dengan status "' . $this->getStatusLabel($pendaftaran->status) . '" tidak dapat dihapus.');
             }
 
             $nama = $pendaftaran->siswa->nama_lengkap ?? 'Unknown';
@@ -107,5 +110,19 @@ class PendaftarController extends Controller
             return redirect()->route('admin.pendaftar.index')
                 ->with('error', 'Gagal menghapus data: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Get status label in Indonesian
+     */
+    private function getStatusLabel($status)
+    {
+        $labels = [
+            'diterima' => 'Diterima',
+            'ditolak' => 'Ditolak',
+            'menunggu_verifikasi' => 'Menunggu Verifikasi',
+        ];
+
+        return $labels[$status] ?? $status;
     }
 }

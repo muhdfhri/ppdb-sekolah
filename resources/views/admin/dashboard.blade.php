@@ -20,95 +20,69 @@
         </div>
     </div>
 
-    {{-- ── Stats Grid ───────────────────────────────────────── --}}
-    @php
-        $growth = $stats['growth'] ?? 0;
-        $growthPositive = $growth >= 0;
-    @endphp
-
+    {{-- ── Quick Access Cards ───────────────────────────────── --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-        {{-- Total Pendaftar --}}
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+        {{-- Pendaftar --}}
+        <a href="{{ route('admin.pendaftar.index') }}"
+            class="group bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:border-primary/40 hover:shadow-md transition-all duration-200 cursor-pointer">
             <div class="flex justify-between items-start">
                 <div
-                    class="size-12 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600">
-                    <span class="material-symbols-outlined text-3xl">groups</span>
+                    class="size-12 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
+                    <span class="material-symbols-outlined text-3xl">person_add</span>
                 </div>
-                {{-- Growth badge: warna dinamis berdasarkan nilai growth --}}
-                <span class="text-xs font-bold px-2 py-1 rounded-md
-                            {{ $growthPositive
-        ? 'text-green-600 bg-green-50 dark:bg-green-900/20'
-        : 'text-red-500 bg-red-50 dark:bg-red-900/20' }}">
-                    {{ $growthPositive ? '+' : '' }}{{ $growth }}%
-                </span>
+                <span
+                    class="material-symbols-outlined text-slate-300 group-hover:text-primary group-hover:translate-x-1 transition-all duration-200">arrow_forward</span>
             </div>
-            <p class="mt-4 text-slate-500 text-sm font-medium">Total Pendaftar</p>
-            <h3 class="text-2xl font-bold mt-1">{{ number_format($stats['total'] ?? 0) }}</h3>
-            <p class="text-xs text-slate-400 mt-1">vs. bulan lalu</p>
-        </div>
+            <p class="mt-4 text-slate-800 dark:text-slate-100 text-base font-bold">Pendaftar</p>
+            <p class="text-xs text-slate-400 mt-1">Kelola data pendaftar PPDB</p>
+        </a>
 
-        {{-- Diterima --}}
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+        {{-- Pengumuman --}}
+        <a href="{{ route('admin.pengumuman.index') }}"
+            class="group bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:border-primary/40 hover:shadow-md transition-all duration-200 cursor-pointer">
             <div class="flex justify-between items-start">
                 <div
-                    class="size-12 rounded-xl bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600">
-                    <span class="material-symbols-outlined text-3xl">check_circle</span>
+                    class="size-12 rounded-xl bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600 group-hover:bg-green-100 transition-colors">
+                    <span class="material-symbols-outlined text-3xl">campaign</span>
                 </div>
-                @php
-                    $pctDiterima = ($stats['total'] ?? 0) > 0
-                        ? round(($stats['diterima'] / $stats['total']) * 100)
-                        : 0;
-                @endphp
-                <span class="text-xs font-bold text-green-600 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-md">
-                    {{ $pctDiterima }}%
-                </span>
+                <span
+                    class="material-symbols-outlined text-slate-300 group-hover:text-primary group-hover:translate-x-1 transition-all duration-200">arrow_forward</span>
             </div>
-            <p class="mt-4 text-slate-500 text-sm font-medium">Diterima</p>
-            <h3 class="text-2xl font-bold mt-1">{{ number_format($stats['diterima'] ?? 0) }}</h3>
-            <p class="text-xs text-slate-400 mt-1">dari total pendaftar</p>
-        </div>
+            <p class="mt-4 text-slate-800 dark:text-slate-100 text-base font-bold">Pengumuman</p>
+            <p class="text-xs text-slate-400 mt-1">Buat & kelola pengumuman</p>
+        </a>
 
-        {{-- Ditolak --}}
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
-            <div class="flex justify-between items-start">
-                <div class="size-12 rounded-xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600">
-                    <span class="material-symbols-outlined text-3xl">cancel</span>
-                </div>
-                @php
-                    $pctDitolak = ($stats['total'] ?? 0) > 0
-                        ? round(($stats['ditolak'] / $stats['total']) * 100)
-                        : 0;
-                @endphp
-                <span class="text-xs font-bold text-red-500 bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded-md">
-                    {{ $pctDitolak }}%
-                </span>
-            </div>
-            <p class="mt-4 text-slate-500 text-sm font-medium">Ditolak</p>
-            <h3 class="text-2xl font-bold mt-1">{{ number_format($stats['ditolak'] ?? 0) }}</h3>
-            <p class="text-xs text-slate-400 mt-1">dari total pendaftar</p>
-        </div>
-
-        {{-- Menunggu Verifikasi --}}
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+        {{-- Laporan --}}
+        <a href="{{ route('admin.laporan.index') }}"
+            class="group bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:border-primary/40 hover:shadow-md transition-all duration-200 cursor-pointer">
             <div class="flex justify-between items-start">
                 <div
-                    class="size-12 rounded-xl bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-orange-600">
-                    <span class="material-symbols-outlined text-3xl">pending_actions</span>
+                    class="size-12 rounded-xl bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-orange-600 group-hover:bg-orange-100 transition-colors">
+                    <span class="material-symbols-outlined text-3xl">description</span>
                 </div>
-                @php
-                    $pctMenunggu = ($stats['total'] ?? 0) > 0
-                        ? round(($stats['menunggu'] / $stats['total']) * 100)
-                        : 0;
-                @endphp
-                <span class="text-xs font-bold text-orange-500 bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-md">
-                    {{ $pctMenunggu }}%
-                </span>
+                <span
+                    class="material-symbols-outlined text-slate-300 group-hover:text-primary group-hover:translate-x-1 transition-all duration-200">arrow_forward</span>
             </div>
-            <p class="mt-4 text-slate-500 text-sm font-medium">Menunggu Verifikasi</p>
-            <h3 class="text-2xl font-bold mt-1">{{ number_format($stats['menunggu'] ?? 0) }}</h3>
-            <p class="text-xs text-slate-400 mt-1">perlu ditindaklanjuti</p>
-        </div>
+            <p class="mt-4 text-slate-800 dark:text-slate-100 text-base font-bold">Laporan</p>
+            <p class="text-xs text-slate-400 mt-1">Lihat & ekspor laporan PPDB</p>
+        </a>
+
+        {{-- Periode --}}
+        <a href="{{ route('admin.pengaturan.index') }}"
+            class="group bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:border-primary/40 hover:shadow-md transition-all duration-200 cursor-pointer">
+            <div class="flex justify-between items-start">
+                <div
+                    class="size-12 rounded-xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 group-hover:bg-purple-100 transition-colors">
+                    <span class="material-symbols-outlined text-3xl">event_note</span>
+                </div>
+                <span
+                    class="material-symbols-outlined text-slate-300 group-hover:text-primary group-hover:translate-x-1 transition-all duration-200">arrow_forward</span>
+            </div>
+            <p class="mt-4 text-slate-800 dark:text-slate-100 text-base font-bold">Periode</p>
+            <p class="text-xs text-slate-400 mt-1">Atur periode penerimaan</p>
+        </a>
+
     </div>
 
     {{-- ── Tren & Aktivitas ─────────────────────────────────── --}}
@@ -152,8 +126,8 @@
                         </span>
                         {{-- Bar --}}
                         <div class="w-full rounded-t-lg transition-all duration-300" style="height: {{ $heightPct }}%;
-                                                   background-color: {{ $isToday ? '#01893e' : 'rgba(1,137,62,0.2)' }};
-                                                   min-height: 4px;">
+                                                           background-color: {{ $isToday ? '#01893e' : 'rgba(1,137,62,0.2)' }};
+                                                           min-height: 4px;">
                         </div>
                         {{-- Label hari --}}
                         <span class="text-[10px] font-bold {{ $isToday ? 'text-primary' : 'text-slate-400' }}">

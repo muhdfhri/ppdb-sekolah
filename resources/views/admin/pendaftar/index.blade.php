@@ -77,24 +77,25 @@
     </div>
 
     {{-- ── Stats Mini ───────────────────────────────────────── --}}
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         @php
             $miniStats = [
-                ['label' => 'Total', 'value' => $stats['total'] ?? 0, 'color' => 'text-blue-600', 'bg' => 'bg-blue-50'],
-                ['label' => 'Draft', 'value' => $stats['draft'] ?? 0, 'color' => 'text-slate-600', 'bg' => 'bg-slate-100'],
-                ['label' => 'Verifikasi', 'value' => $stats['menunggu_verifikasi'] ?? 0, 'color' => 'text-orange-600', 'bg' => 'bg-orange-50'],
-                ['label' => 'Diterima', 'value' => $stats['diterima'] ?? 0, 'color' => 'text-green-600', 'bg' => 'bg-green-50'],
-                ['label' => 'Ditolak', 'value' => $stats['ditolak'] ?? 0, 'color' => 'text-red-600', 'bg' => 'bg-red-50'],
+                ['label' => 'Total Pendaftar', 'value' => $stats['total'] ?? 0, 'color' => 'text-blue-600', 'bg' => 'bg-blue-50', 'icon' => 'groups'],
+                ['label' => 'Menunggu Verifikasi', 'value' => $stats['menunggu_verifikasi'] ?? 0, 'color' => 'text-orange-600', 'bg' => 'bg-orange-50', 'icon' => 'hourglass_empty'],
+                ['label' => 'Diterima', 'value' => $stats['diterima'] ?? 0, 'color' => 'text-green-600', 'bg' => 'bg-green-50', 'icon' => 'check_circle'],
+                ['label' => 'Ditolak', 'value' => $stats['ditolak'] ?? 0, 'color' => 'text-red-600', 'bg' => 'bg-red-50', 'icon' => 'cancel'],
             ];
         @endphp
         @foreach($miniStats as $s)
             <div
-                class="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 px-5 py-4 flex items-center gap-4">
-                <div
-                    class="size-10 rounded-lg {{ $s['bg'] }} flex items-center justify-center {{ $s['color'] }} font-extrabold text-lg">
-                    {{ number_format($s['value']) }}
+                class="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 px-5 py-4 flex items-center gap-4 hover:shadow-md transition-shadow">
+                <div class="size-10 rounded-lg {{ $s['bg'] }} flex items-center justify-center {{ $s['color'] }}">
+                    <span class="material-symbols-outlined text-2xl">{{ $s['icon'] }}</span>
                 </div>
-                <p class="text-xs font-semibold text-slate-500">{{ $s['label'] }}</p>
+                <div>
+                    <p class="text-2xl font-bold text-slate-800 dark:text-white">{{ number_format($s['value']) }}</p>
+                    <p class="text-xs font-medium text-slate-500">{{ $s['label'] }}</p>
+                </div>
             </div>
         @endforeach
     </div>

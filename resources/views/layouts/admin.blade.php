@@ -140,6 +140,29 @@
                         class="text-sm font-{{ request()->routeIs('admin.pengaturan.*') ? 'semibold' : 'medium' }}">Periode</span>
                 </a>
 
+                {{-- ── Divider + Label ─────────────────────────── --}}
+                <div class="pt-3 pb-1">
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 h-px bg-slate-200 dark:bg-slate-700"></div>
+                        <span
+                            class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 shrink-0">
+                            Manajemen
+                        </span>
+                        <div class="flex-1 h-px bg-slate-200 dark:bg-slate-700"></div>
+                    </div>
+                </div>
+
+                {{-- Kelola Pengguna --}}
+                <a href="{{ route('admin.pengguna.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors
+                    {{ request()->routeIs('admin.pengguna.*') ? 'sidebar-item-active' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800' }}">
+                    <span
+                        class="material-symbols-outlined {{ request()->routeIs('admin.pengguna.*') ? 'text-primary' : '' }}">manage_accounts</span>
+                    <span
+                        class="text-sm font-{{ request()->routeIs('admin.pengguna.*') ? 'semibold' : 'medium' }}">Kelola
+                        Pengguna</span>
+                </a>
+
             </nav>
 
             {{-- Footer sidebar --}}

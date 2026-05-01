@@ -21,6 +21,8 @@ use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\Admin\JurusanController;
 use App\Http\Controllers\Admin\PengumumanController;
+use App\Http\Controllers\Admin\PenggunaController;
+
 
 // ================================================================
 // LANDING PAGE
@@ -174,6 +176,15 @@ Route::middleware(['auth', 'admin'])
             Route::patch('/periode/{id}/toggle', [PengaturanController::class, 'toggleActive'])->name('periode.toggle');
 
             Route::put('/kuota', [PengaturanController::class, 'updateKuota'])->name('kuota');
+        });
+
+        // ── Kelola Pengguna ──────────────────────────────────
+        Route::prefix('pengguna')->name('pengguna.')->group(function () {
+            Route::get('/', [PenggunaController::class, 'index'])->name('index');
+            Route::post('/', [PenggunaController::class, 'store'])->name('store');
+            Route::put('/{id}', [PenggunaController::class, 'update'])->name('update');
+            Route::delete('/{id}', [PenggunaController::class, 'destroy'])->name('destroy');
+            Route::patch('/{id}/reset-password', [PenggunaController::class, 'resetPassword'])->name('reset-password');
         });
 
     });

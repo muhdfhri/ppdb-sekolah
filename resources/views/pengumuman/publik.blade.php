@@ -159,8 +159,8 @@
                                 $stats = [
                                     ['label' => 'Total Pendaftar', 'count' => $pendaftaran->total(), 'icon' => 'group', 'color' => '#018B3E'],
                                     ['label' => 'Diterima', 'count' => $pendaftaran->where('status', 'diterima')->count(), 'icon' => 'check_circle', 'color' => '#16a34a'],
-                                    ['label' => 'Cadangan', 'count' => $pendaftaran->where('status', 'cadangan')->count(), 'icon' => 'pending', 'color' => '#b45309'],
-                                    ['label' => 'Menunggu', 'count' => $pendaftaran->where('status', 'menunggu_verifikasi')->count(), 'icon' => 'hourglass_top', 'color' => '#64748b'],
+                                    ['label' => 'Ditolak', 'count' => $pendaftaran->where('status', 'ditolak')->count(), 'icon' => 'cancel', 'color' => '#dc2626'],
+                                    ['label' => 'Menunggu Verifikasi', 'count' => $pendaftaran->where('status', 'menunggu_verifikasi')->count(), 'icon' => 'hourglass_top', 'color' => '#64748b'],
                                 ];
                             @endphp
                             @foreach($stats as $s)
@@ -191,7 +191,7 @@
                                     oninput="filterTable(this.value)">
                             </div>
                             <div class="flex gap-2 flex-wrap">
-                                @foreach(['semua' => 'Semua', 'diterima' => 'Diterima', 'cadangan' => 'Cadangan', 'menunggu_verifikasi' => 'Menunggu'] as $val => $label)
+                                @foreach(['semua' => 'Semua', 'diterima' => 'Diterima', 'ditolak' => 'Ditolak', 'menunggu_verifikasi' => 'Menunggu'] as $val => $label)
                                                         <button onclick="filterStatus('{{ $val }}')" data-filter="{{ $val }}"
                                                             class="filter-btn px-4 py-2 rounded-xl text-xs font-bold border transition-all" style="{{ $val === 'semua'
                                     ? 'background-color:#018B3E; color:white; border-color:#018B3E;'
@@ -246,10 +246,8 @@
                                                 @php
                                                     $sc = match ($daftar->status) {
                                                         'diterima' => ['label' => 'Diterima', 'bg' => 'rgba(22,163,74,0.1)', 'color' => '#16a34a', 'dot' => '#16a34a'],
-                                                        'cadangan' => ['label' => 'Cadangan', 'bg' => 'rgba(180,83,9,0.1)', 'color' => '#b45309', 'dot' => '#d97706'],
                                                         'ditolak' => ['label' => 'Ditolak', 'bg' => 'rgba(220,38,38,0.1)', 'color' => '#dc2626', 'dot' => '#ef4444'],
-                                                        'menunggu_verifikasi' => ['label' => 'Menunggu', 'bg' => 'rgba(100,116,139,0.1)', 'color' => '#64748b', 'dot' => '#94a3b8'],
-                                                        'terverifikasi' => ['label' => 'Terverifikasi', 'bg' => 'rgba(1,139,62,0.1)', 'color' => '#018B3E', 'dot' => '#018B3E'],
+                                                        'menunggu_verifikasi' => ['label' => 'Menunggu Verifikasi', 'bg' => 'rgba(100,116,139,0.1)', 'color' => '#64748b', 'dot' => '#94a3b8'],
                                                         default => ['label' => $daftar->status, 'bg' => 'rgba(100,116,139,0.1)', 'color' => '#64748b', 'dot' => '#94a3b8'],
                                                     };
                                                 @endphp

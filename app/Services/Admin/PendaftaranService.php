@@ -3,125 +3,128 @@
 namespace App\Services\Admin;
 
 use App\Models\Pendaftaran;
-use App\Models\VerifikasiLog;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class PendaftaranService
 {
-    // ================================================================
-    // UPDATE STATUS (core method)
-    // Dipakai oleh: terima(), tolak(), verifikasi()
-    // di Admin\PendaftarController
-    // ================================================================
+    /**
+     * Build query with filters
+     */
+    public function buildQuery(array $filters = [])
+    {
+        $query = Pendaftaran::with(['user', 'siswa', 'jurusan']);
+
+        // Search by name or registration number
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('nomor_pendaftaran', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($q2) use ($search) {
+                        $q2->where('nama_lengkap', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('siswa', function ($q2) use ($search) {
+                        $q2->where('nama_lengkap', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        // Filter by status (hanya status yang ada di enum: diterima, ditolak, menunggu_verifikasi)
+        if (!empty($filters['status']) && in_array($filters['status'], ['diterima', 'ditolak', 'menunggu_verifikasi'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        // Filter by jurusan
+        if (!empty($filters['jurusan_id'])) {
+            $query->where(function ($q) use ($filters) {
+                $q->where('jurusan_id', $filters['jurusan_id'])
+                    ->orWhere('jurusan_id_2', $filters['jurusan_id']);
+            });
+        }
+
+        return $query->latest('tanggal_daftar');
+    }
 
     /**
-     * Update status pendaftaran dan catat ke verifikasi_log
-     *
-     * @param Pendaftaran $pendaftaran
-     * @param string      $statusBaru   diterima | ditolak | terverifikasi
-     * @param string|null $catatan
+     * Get statistics for dashboard
      */
-    public function updateStatus(
-        Pendaftaran $pendaftaran,
-        string $statusBaru,
-        ?string $catatan = null
-    ): void {
-        DB::transaction(function () use ($pendaftaran, $statusBaru, $catatan) {
+    public function getStats()
+    {
+        return [
+            'total' => Pendaftaran::count(),
+            'menunggu_verifikasi' => Pendaftaran::where('status', 'menunggu_verifikasi')->count(),
+            'diterima' => Pendaftaran::where('status', 'diterima')->count(),
+            'ditolak' => Pendaftaran::where('status', 'ditolak')->count(),
+        ];
+    }
 
-            $statusLama = $pendaftaran->status;
+    /**
+     * Accept registration
+     */
+    public function terima(Pendaftaran $pendaftaran, ?string $catatan = null)
+    {
+        DB::transaction(function () use ($pendaftaran, $catatan) {
+            // Simpan status sebelumnya
+            $statusSebelum = $pendaftaran->status;
 
-            // Update status pendaftaran
+            // Update status
             $pendaftaran->update([
-                'status' => $statusBaru,
+                'status' => 'diterima',
                 'catatan_admin' => $catatan,
             ]);
 
-            // Catat log verifikasi
-            VerifikasiLog::create([
-                'pendaftaran_id' => $pendaftaran->id,
-                'admin_id' => Auth::id(),
-                'status_sebelum' => $statusLama,
-                'status_sesudah' => $statusBaru,
+            // Catat ke log verifikasi
+            $pendaftaran->verifikasiLog()->create([
+                'admin_id' => auth()->id(),
+                'status_sebelum' => $statusSebelum,
+                'status_sesudah' => 'diterima',
+                'catatan' => $catatan ?? 'Pendaftaran diterima.',
+            ]);
+        });
+    }
+
+    /**
+     * Reject registration
+     */
+    public function tolak(Pendaftaran $pendaftaran, string $catatan)
+    {
+        DB::transaction(function () use ($pendaftaran, $catatan) {
+            // Simpan status sebelumnya
+            $statusSebelum = $pendaftaran->status;
+
+            // Update status
+            $pendaftaran->update([
+                'status' => 'ditolak',
+                'catatan_admin' => $catatan,
+            ]);
+
+            // Catat ke log verifikasi
+            $pendaftaran->verifikasiLog()->create([
+                'admin_id' => auth()->id(),
+                'status_sebelum' => $statusSebelum,
+                'status_sesudah' => 'ditolak',
                 'catatan' => $catatan,
             ]);
         });
     }
 
-    // ================================================================
-    // SHORTCUT METHODS
-    // Dipakai langsung dari controller untuk keterbacaan
-    // ================================================================
-
-    public function terima(Pendaftaran $pendaftaran, ?string $catatan = null): void
-    {
-        $this->updateStatus($pendaftaran, Pendaftaran::STATUS_DITERIMA, $catatan);
-    }
-
-    public function tolak(Pendaftaran $pendaftaran, string $catatan): void
-    {
-        $this->updateStatus($pendaftaran, Pendaftaran::STATUS_DITOLAK, $catatan);
-    }
-
-    public function verifikasi(Pendaftaran $pendaftaran): void
-    {
-        $this->updateStatus($pendaftaran, Pendaftaran::STATUS_TERVERIFIKASI, 'Berkas lengkap dan valid');
-    }
-
-    // ================================================================
-    // QUERY HELPERS
-    // Untuk index/filter di Admin\PendaftarController::index()
-    // ================================================================
-
     /**
-     * Build query dengan filter search, status, jurusan
+     * Verify documents (only for menunggu_verifikasi status)
      */
-    public function buildQuery(array $filters = [])
+    public function verifikasi(Pendaftaran $pendaftaran)
     {
-        $query = Pendaftaran::with(['siswa', 'sekolahAsal', 'jurusan', 'user']);
+        // Fungsi ini bisa digunakan untuk verifikasi berkas
+        // atau bisa diintegrasikan dengan proses penerimaan/penolakan
 
-        // Filter search: nama siswa, NIK, atau NISN
-        if (!empty($filters['search'])) {
-            $search = $filters['search'];
-            $query->where(function ($q) use ($search) {
-                $q->whereHas('siswa', function ($sq) use ($search) {
-                    $sq->where('nama_lengkap', 'like', "%{$search}%")
-                        ->orWhere('nik', 'like', "%{$search}%");
-                })->orWhereHas('sekolahAsal', function ($sq) use ($search) {
-                    $sq->where('nisn', 'like', "%{$search}%");
-                })->orWhereHas('user', function ($sq) use ($search) {
-                    $sq->where('nama_lengkap', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%");
-                });
-            });
-        }
-
-        // Filter status
-        if (!empty($filters['status'])) {
-            $query->where('status', $filters['status']);
-        }
-
-        // Filter jurusan
-        if (!empty($filters['jurusan_id'])) {
-            $query->where('jurusan_id', $filters['jurusan_id']);
-        }
-
-        return $query->orderBy('created_at', 'desc');
-    }
-
-    // ================================================================
-    // STATS UNTUK MINI CARDS
-    // Dipakai di Admin\PendaftarController::index()
-    // ================================================================
-
-    public function getStats(): array
-    {
-        return [
-            'total' => Pendaftaran::count(),
-            'diterima' => Pendaftaran::where('status', Pendaftaran::STATUS_DITERIMA)->count(),
-            'ditolak' => Pendaftaran::where('status', Pendaftaran::STATUS_DITOLAK)->count(),
-            'menunggu' => Pendaftaran::where('status', Pendaftaran::STATUS_MENUNGGU_VERIFIKASI)->count(),
-            'draft' => Pendaftaran::where('status', Pendaftaran::STATUS_DRAFT)->count(),
-        ];
+        DB::transaction(function () use ($pendaftaran) {
+            // Catat ke log verifikasi
+            $pendaftaran->verifikasiLog()->create([
+                'admin_id' => auth()->id(),
+                'status_sebelum' => $pendaftaran->status,
+                'status_sesudah' => $pendaftaran->status,
+                'catatan' => 'Berkas telah diverifikasi oleh admin.',
+            ]);
+        });
     }
 }
