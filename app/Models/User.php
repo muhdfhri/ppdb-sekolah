@@ -38,22 +38,10 @@ class User extends Authenticatable
 
     public function isSiswa(): bool
     {
-        return $this->role === 'siswa';
+        return false;
     }
 
     // ── Relasi ──────────────────────────────────────────────
-
-    /** Pendaftaran milik siswa ini */
-    public function pendaftaran(): HasMany
-    {
-        return $this->hasMany(Pendaftaran::class, 'user_id');
-    }
-
-    /** Pendaftaran aktif (hanya 1 per periode) */
-    public function pendaftaranAktif(): HasOne
-    {
-        return $this->hasOne(Pendaftaran::class, 'user_id')->latestOfMany();
-    }
 
     /** Log verifikasi yang dilakukan admin ini */
     public function verifikasiLog(): HasMany

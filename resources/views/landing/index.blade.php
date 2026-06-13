@@ -77,9 +77,9 @@
                         @php
                             $user      = Auth::user();
                             $initials  = collect(explode(' ', $user->nama_lengkap ?? $user->name))->map(fn($w) => strtoupper($w[0]))->take(2)->join('');
-                            $dashboard = $user->isAdmin() ? route('admin.dashboard') : route('siswa.dashboard');
-                            $dashLabel = $user->isAdmin() ? 'Panel Admin' : 'Dashboard Saya';
-                            $dashIcon  = $user->isAdmin() ? 'admin_panel_settings' : 'dashboard';
+                            $dashboard = route('admin.dashboard');
+                            $dashLabel = 'Panel Admin';
+                            $dashIcon  = 'admin_panel_settings';
                         @endphp
                         <div class="hidden md:block relative" x-data="{ open: false }">
                             <button @click="open = !open" @click.outside="open = false"
@@ -91,7 +91,7 @@
                                     style="background-color:#F6CB04; color:#0f2318;">{{ $initials }}</div>
                                 <div class="flex flex-col text-left leading-tight">
                                     <span class="text-sm font-bold text-white truncate max-w-[120px]">{{ Str::limit($user->nama_lengkap ?? $user->name, 18) }}</span>
-                                    <span class="text-[10px] font-medium" style="color:rgba(246,203,4,0.85);">{{ $user->isAdmin() ? 'Administrator' : 'Pendaftar' }}</span>
+                                    <span class="text-[10px] font-medium" style="color:rgba(246,203,4,0.85);">Administrator</span>
                                 </div>
                                 <span class="material-symbols-outlined text-sm text-white/70 transition-transform duration-200"
                                     :style="open ? 'transform:rotate(180deg)' : ''">expand_more</span>
@@ -118,20 +118,6 @@
                                         onmouseout="this.style.backgroundColor='transparent';">
                                         <span class="material-symbols-outlined text-base">{{ $dashIcon }}</span>{{ $dashLabel }}
                                     </a>
-                                    @if(!$user->isAdmin())
-                                    <a href="{{ route('siswa.pendaftaran.index') }}"
-                                        class="flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-slate-600 transition-colors"
-                                        onmouseover="this.style.backgroundColor='rgba(0,0,0,0.04)';"
-                                        onmouseout="this.style.backgroundColor='transparent';">
-                                        <span class="material-symbols-outlined text-base">assignment</span>Status Pendaftaran
-                                    </a>
-                                    <a href="{{ route('siswa.profil') }}"
-                                        class="flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-slate-600 transition-colors"
-                                        onmouseover="this.style.backgroundColor='rgba(0,0,0,0.04)';"
-                                        onmouseout="this.style.backgroundColor='transparent';">
-                                        <span class="material-symbols-outlined text-base">manage_accounts</span>Profil Saya
-                                    </a>
-                                    @endif
                                 </div>
                                 <div class="border-t py-2" style="border-color:#f1f5f9;">
                                     <form method="POST" action="{{ route('logout') }}">
@@ -147,14 +133,10 @@
                             </div>
                         </div>
                         @else
-                        <a href="{{ route('register') }}"
+                        <a href="{{ route('pendaftaran') }}"
                             class="hidden sm:flex px-5 py-2 rounded-lg font-bold text-sm transition-all shadow-sm hover:brightness-110"
                             style="background-color:#F6CB04; color:#0f2318;">Daftar Sekarang</a>
-                        <a href="{{ route('login') }}"
-                            class="hidden sm:flex px-4 py-2 rounded-lg font-bold text-sm border transition-all"
-                            style="border-color:rgba(255,255,255,0.4); color:white;"
-                            onmouseover="this.style.backgroundColor='rgba(255,255,255,0.12)';"
-                            onmouseout="this.style.backgroundColor='transparent';">Masuk</a>
+                        {{-- Login button hidden (admin only via direct URL) --}}
                         @endauth
 
                         {{-- Hamburger — HARUS ada di dalam drawer-content --}}
@@ -189,7 +171,7 @@
                             Wujudkan masa depan gemilang dengan pendidikan vokasi berkualitas, fasilitas modern, dan penguatan karakter Islami di SMK Swasta Nahdatul Ulama II Medan.
                         </p>
                         <div class="flex flex-col sm:flex-row gap-4 mt-4">
-                            <a href="{{ route('register') }}"
+                            <a href="{{ route('pendaftaran') }}"
                                 class="px-8 py-4 rounded-xl font-black text-lg shadow-lg flex items-center justify-center gap-2 hover:brightness-105 transition-all"
                                 style="background-color:#F6CB04; color:#0f2318;">
                                 Daftar Sekarang
@@ -405,28 +387,12 @@
                                 {{-- CTA --}}
                                 <div>
                                     @if($isBuka)
-                                        @auth
-                                            @if(auth()->user()->role === 'siswa')
-                                                <a href="{{ route('siswa.pendaftaran.index') }}"
-                                                    class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl font-bold text-sm transition-all hover:brightness-110 shadow-lg"
-                                                    style="background-color: #018B3E; color: white;">
-                                                    <span class="material-symbols-outlined text-base">how_to_reg</span>
-                                                    Daftar Sekarang
-                                                </a>
-                                            @else
-                                                <span class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl font-bold text-sm cursor-not-allowed bg-slate-100 text-slate-400">
-                                                    <span class="material-symbols-outlined text-base">block</span>
-                                                    Khusus Siswa
-                                                </span>
-                                            @endif
-                                        @else
-                                            <a href="{{ route('register') }}"
-                                                class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl font-black text-sm transition-all hover:brightness-110 shadow-lg"
-                                                style="background-color: #F6CB04; color: #0f2318;">
-                                                <span class="material-symbols-outlined text-base">login</span>
-                                                Daftar / Masuk
-                                            </a>
-                                        @endauth
+                                        <a href="{{ route('pendaftaran') }}"
+                                            class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl font-black text-sm transition-all hover:brightness-110 shadow-lg"
+                                            style="background-color: #F6CB04; color: #0f2318;">
+                                            <span class="material-symbols-outlined text-base">how_to_reg</span>
+                                            Daftar Sekarang
+                                        </a>
 
                                         {{-- Sisa hari chip --}}
                                         @if($sisa !== null)
@@ -678,9 +644,9 @@
             @php
                 $user      = Auth::user();
                 $initials  = collect(explode(' ', $user->nama_lengkap ?? $user->name))->map(fn($w) => strtoupper($w[0]))->take(2)->join('');
-                $dashboard = $user->isAdmin() ? route('admin.dashboard') : route('siswa.dashboard');
-                $dashLabel = $user->isAdmin() ? 'Panel Admin' : 'Dashboard Saya';
-                $dashIcon  = $user->isAdmin() ? 'admin_panel_settings' : 'dashboard';
+                $dashboard = route('admin.dashboard');
+                $dashLabel = 'Panel Admin';
+                $dashIcon  = 'admin_panel_settings';
             @endphp
             <div class="mx-4 mt-5 rounded-2xl p-4"
                 style="background-color:rgba(1,139,62,0.2); border:1px solid rgba(1,139,62,0.3);">
@@ -804,17 +770,6 @@
                         <span class="material-symbols-outlined text-xl" style="color:#F6CB04;">{{ $dashIcon }}</span>
                         {{ $dashLabel }}
                     </a>
-                    @if(!$user->isAdmin())
-                    <a href="{{ route('siswa.pendaftaran.index') }}"
-                        onclick="document.getElementById('mobile-drawer').checked = false;"
-                        class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all"
-                        style="color:rgba(255,255,255,0.75);"
-                        onmouseover="this.style.backgroundColor='rgba(1,139,62,0.25)';this.style.color='white';"
-                        onmouseout="this.style.backgroundColor='transparent';this.style.color='rgba(255,255,255,0.75)';">
-                        <span class="material-symbols-outlined text-xl" style="color:#018B3E;">assignment</span>
-                        Status Pendaftaran
-                    </a>
-                    @endif
                 </div>
                 @endauth
             </nav>
@@ -833,20 +788,13 @@
                         </button>
                     </form>
                 @else
-                    <a href="{{ route('register') }}"
+                    <a href="{{ route('pendaftaran') }}"
                         class="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-sm transition-all hover:brightness-110"
                         style="background-color:#F6CB04; color:#0f2318;">
                         <span class="material-symbols-outlined text-[20px]">how_to_reg</span>
                         Daftar Sekarang
                     </a>
-                    <a href="{{ route('login') }}"
-                        class="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-bold text-sm mt-3 transition-all"
-                        style="border:1.5px solid rgba(1,139,62,0.5); color:rgba(255,255,255,0.75);"
-                        onmouseover="this.style.borderColor='#018B3E';this.style.color='white';"
-                        onmouseout="this.style.borderColor='rgba(1,139,62,0.5)';this.style.color='rgba(255,255,255,0.75)';">
-                        <span class="material-symbols-outlined text-[20px]">login</span>
-                        Login
-                    </a>
+                    {{-- Login hidden (admin only via direct URL) --}}
                 @endauth
             </div>
 

@@ -192,7 +192,7 @@
                                 {{ str_replace('_', ' ', $log->status_sesudah) }}
                             </p>
                             <p class="text-xs text-slate-500 truncate">
-                                {{ $log->pendaftaran->siswa->nama_lengkap ?? '—' }}
+                                {{ $log->pendaftaran->nama_lengkap ?? $log->pendaftaran->siswa->nama_lengkap ?? '—' }}
                             </p>
                             <div class="flex items-center gap-2 mt-1">
                                 <p class="text-[10px] text-slate-400">{{ $log->created_at->diffForHumans() }}</p>
@@ -267,11 +267,11 @@
                                 <div class="flex items-center gap-3">
                                     <div class="size-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
                                         style="background-color: #01893e;">
-                                        {{ strtoupper(substr($p->siswa->nama_lengkap ?? '?', 0, 2)) }}
+                                        {{ strtoupper(substr($p->nama_lengkap ?? $p->siswa->nama_lengkap ?? '?', 0, 2)) }}
                                     </div>
                                     <div>
                                         <p class="font-semibold text-slate-900 dark:text-white">
-                                            {{ $p->siswa->nama_lengkap ?? '—' }}
+                                            {{ $p->nama_lengkap ?? $p->siswa->nama_lengkap ?? '—' }}
                                         </p>
                                         <p class="text-[10px] text-slate-400 font-mono">{{ $p->nomor_pendaftaran }}</p>
                                     </div>

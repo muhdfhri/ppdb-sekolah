@@ -19,7 +19,7 @@ return new class extends Migration {
             }
 
             if (!Schema::hasColumn('users', 'role')) {
-                $table->enum('role', ['admin', 'siswa'])->default('siswa')->after('password');
+                $table->enum('role', ['admin'])->default('admin')->after('password');
             }
         });
     }

@@ -65,7 +65,7 @@ class LaporanService
 
     public function buildQuery(array $filters = [])
     {
-        $query = Pendaftaran::with(['siswa', 'sekolahAsal', 'jurusan', 'user']);
+        $query = Pendaftaran::with(['siswa', 'sekolahAsal', 'jurusan']);
 
         if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
@@ -100,7 +100,7 @@ class LaporanService
                 return [
                     'no' => $i + 1,
                     'nomor_pendaftaran' => $p->nomor_pendaftaran,
-                    'nama_siswa' => $p->siswa->nama_lengkap ?? $p->user->nama_lengkap,
+                    'nama_siswa' => $p->siswa->nama_lengkap ?? $p->nama_lengkap ?? '—',
                     'nik' => $p->siswa->nik ?? '—',
                     'nisn' => $p->sekolahAsal->nisn ?? '—',
                     'tempat_lahir' => $p->siswa->tempat_lahir ?? '—',

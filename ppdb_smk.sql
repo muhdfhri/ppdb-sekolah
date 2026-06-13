@@ -18,12 +18,12 @@ CREATE TABLE users (
     nama_lengkap VARCHAR(255) NOT NULL COMMENT 'Nama lengkap pengguna',
     email VARCHAR(255) NOT NULL UNIQUE COMMENT 'Email untuk login',
     password VARCHAR(255) NOT NULL COMMENT 'Password yang di-hash',
-    role ENUM('admin', 'siswa') NOT NULL DEFAULT 'siswa' COMMENT 'Peran: admin atau siswa',
+    role ENUM('admin') NOT NULL DEFAULT 'admin' COMMENT 'Peran: admin',
     email_verified_at TIMESTAMP NULL COMMENT 'Waktu verifikasi email',
     remember_token VARCHAR(100) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB COMMENT='Tabel akun pengguna (siswa & admin)';
+) ENGINE=InnoDB COMMENT='Tabel akun pengguna (admin)';
 
 
 -- ============================================================
@@ -74,7 +74,7 @@ CREATE TABLE pengaturan_ppdb (
 -- ============================================================
 CREATE TABLE pendaftaran (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    user_id BIGINT UNSIGNED NOT NULL COMMENT 'Relasi ke tabel users',
+    nama_lengkap VARCHAR(255) NOT NULL COMMENT 'Nama lengkap pendaftar',
     pengaturan_ppdb_id BIGINT UNSIGNED NOT NULL COMMENT 'Relasi ke periode PPDB',
     jurusan_id BIGINT UNSIGNED NOT NULL COMMENT 'Jurusan pilihan pertama',
     jurusan_id_2 BIGINT UNSIGNED NULL COMMENT 'Jurusan pilihan kedua (opsional)',
@@ -90,11 +90,10 @@ CREATE TABLE pendaftaran (
         'cadangan'             -- Masuk daftar cadangan
     ) NOT NULL DEFAULT 'draft' COMMENT 'Status pendaftaran',
     catatan_admin TEXT NULL COMMENT 'Catatan dari admin saat verifikasi',
-    step_terakhir TINYINT UNSIGNED DEFAULT 1 COMMENT 'Step form terakhir yang diisi (1-5)',
+    step_terakhir TINYINT UNSIGNED DEFAULT 1 COMMENT 'Step form terakhir yang diisi (1-3)',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (pengaturan_ppdb_id) REFERENCES pengaturan_ppdb(id),
     FOREIGN KEY (jurusan_id) REFERENCES jurusan(id),
     FOREIGN KEY (jurusan_id_2) REFERENCES jurusan(id)

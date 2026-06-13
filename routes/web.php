@@ -45,8 +45,8 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 
-    Route::get('/register', [RegisterController::class, 'showRegisterForm'])->name('register');
-    Route::post('/register', [RegisterController::class, 'register'])->name('register.post');
+    // Route::get('/register', [RegisterController::class, 'showRegisterForm'])->name('register');
+    // Route::post('/register', [RegisterController::class, 'register'])->name('register.post');
 
 });
 
@@ -56,8 +56,17 @@ Route::post('/logout', [LoginController::class, 'logout'])
     ->middleware('auth');
 
 // ================================================================
-// SISWA ROUTES — middleware: auth + siswa
+// PUBLIC REGISTRATION ROUTES
 // ================================================================
+Route::get('/pendaftaran', [App\Http\Controllers\LandingPendaftarController::class, 'showForm'])->name('pendaftaran');
+Route::post('/pendaftaran', [App\Http\Controllers\LandingPendaftarController::class, 'store'])->name('landing.pendaftaran.store');
+Route::get('/pendaftaran/success/{id}', [App\Http\Controllers\LandingPendaftarController::class, 'success'])->name('landing.pendaftaran.success');
+Route::get('/pendaftaran/cetak-pdf/{id}', [App\Http\Controllers\LandingPendaftarController::class, 'cetakPdf'])->name('landing.pendaftaran.cetak');
+
+// ================================================================
+// SISWA ROUTES — Disabled (No Student Accounts)
+// ================================================================
+/*
 Route::middleware(['auth', 'siswa'])
     ->prefix('siswa')
     ->name('siswa.')
@@ -95,6 +104,7 @@ Route::middleware(['auth', 'siswa'])
         });
 
     });
+*/
 
 // ================================================================
 // ADMIN ROUTES — middleware: auth + admin

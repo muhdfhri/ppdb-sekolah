@@ -14,7 +14,7 @@
             'draft' => ['dot' => 'bg-slate-300', 'text' => 'text-slate-500', 'bg' => 'bg-slate-100 dark:bg-slate-800', 'label' => 'Draft'],
         ];
         $sc = $statusConfig[$pendaftaran->status] ?? $statusConfig['draft'];
-        $nama = $pendaftaran->siswa->nama_lengkap ?? $pendaftaran->user->nama_lengkap ?? 'Tidak Diketahui';
+        $nama = $pendaftaran->nama_lengkap ?? $pendaftaran->siswa->nama_lengkap ?? 'Tidak Diketahui';
         $inisial = $nama !== 'Tidak Diketahui'
             ? strtoupper(implode('', array_map(fn($w) => $w[0], array_slice(explode(' ', $nama), 0, 2))))
             : '??';
@@ -58,7 +58,7 @@
                         {{ $sc['label'] }}
                     </span>
                 </div>
-                <p class="text-slate-500 text-sm">{{ $pendaftaran->user->email ?? '-' }}</p>
+                <p class="text-slate-500 text-sm">{{ $pendaftaran->siswa->email ?? $pendaftaran->nomor_pendaftaran ?? '-' }}</p>
                 <div class="flex flex-wrap gap-4 mt-3 text-xs text-slate-500">
                     <span class="flex items-center gap-1">
                         <span class="material-symbols-outlined text-sm text-primary">school</span>
@@ -71,7 +71,7 @@
                     </span>
                     <span class="flex items-center gap-1">
                         <span class="material-symbols-outlined text-sm text-primary">stairs</span>
-                        Step {{ $pendaftaran->step_terakhir ?? 1 }} / 5
+                        Step {{ $pendaftaran->step_terakhir ?? 1 }} / 3
                     </span>
                 </div>
             </div>
@@ -114,7 +114,7 @@
                     @php
                         $pribadi = [
                             ['label' => 'NIK', 'value' => $pendaftaran->siswa->nik ?? '-'],
-                            ['label' => 'Nama Lengkap', 'value' => $pendaftaran->siswa->nama_lengkap ?? '-'],
+                            ['label' => 'Nama Lengkap', 'value' => $pendaftaran->nama_lengkap ?? $pendaftaran->siswa->nama_lengkap ?? '-'],
                             ['label' => 'Tempat Lahir', 'value' => $pendaftaran->siswa->tempat_lahir ?? '-'],
                             ['label' => 'Tanggal Lahir', 'value' => isset($pendaftaran->siswa->tanggal_lahir) ? \Carbon\Carbon::parse($pendaftaran->siswa->tanggal_lahir)->translatedFormat('d M Y') : '-'],
                             ['label' => 'Jenis Kelamin', 'value' => $pendaftaran->siswa->jenis_kelamin ?? '-'],

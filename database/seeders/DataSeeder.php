@@ -30,17 +30,23 @@ class DataSeeder extends Seeder
             return;
         }
 
-        // Daftar user yang akan dibuat pendaftarannya (kecuali Suci Rahmayani email: suci@gmail.com)
-        $users = DB::table('users')
-            ->where('email', '!=', 'suci@gmail.com')
-            ->where('role', 'siswa')
-            ->limit(10)
-            ->get();
+        // Ambil data admin untuk verifikasi
+        $admin = DB::table('users')->where('role', 'admin')->first();
+        $adminId = $admin ? $admin->id : 1;
 
-        if ($users->isEmpty()) {
-            $this->command->error('Tidak ada user siswa yang ditemukan!');
-            return;
-        }
+        // Daftar siswa yang akan dibuat pendaftarannya
+        $students = [
+            ['nama_lengkap' => 'Suci Rahmayani', 'email' => 'suci@gmail.com'],
+            ['nama_lengkap' => 'Budi Santoso', 'email' => 'budi.santoso@gmail.com'],
+            ['nama_lengkap' => 'Dewi Anggraini', 'email' => 'dewi.anggraini@gmail.com'],
+            ['nama_lengkap' => 'Rizky Pratama', 'email' => 'rizky.pratama@gmail.com'],
+            ['nama_lengkap' => 'Siti Nurhaliza', 'email' => 'siti.nurhaliza@gmail.com'],
+            ['nama_lengkap' => 'Ahmad Fauzi', 'email' => 'ahmad.fauzi@gmail.com'],
+            ['nama_lengkap' => 'Rina Wulandari', 'email' => 'rina.wulandari@gmail.com'],
+            ['nama_lengkap' => 'Eko Prasetyo', 'email' => 'eko.prasetyo@gmail.com'],
+            ['nama_lengkap' => 'Fitri Handayani', 'email' => 'fitri.handayani@gmail.com'],
+            ['nama_lengkap' => 'Hendra Gunawan', 'email' => 'hendra.gunawan@gmail.com'],
+        ];
 
         // Status yang akan diberikan
         // Diterima: 5 orang, Ditolak: 1 orang, Menunggu Verifikasi: 4 orang
@@ -101,7 +107,7 @@ class DataSeeder extends Seeder
 
         $counter = 0;
 
-        foreach ($users as $index => $user) {
+        foreach ($students as $index => $student) {
             $status = $statusList[$index];
 
             // Pilih jurusan berdasarkan kuota yang tersedia (acak)
@@ -120,7 +126,7 @@ class DataSeeder extends Seeder
 
             // Insert data pendaftaran
             $pendaftaranId = DB::table('pendaftaran')->insertGetId([
-                'user_id' => $user->id,
+                'nama_lengkap' => $student['nama_lengkap'],
                 'pengaturan_ppdb_id' => $periodeAktif->id,
                 'jurusan_id' => $selectedJurusan->id,
                 'jurusan_id_2' => $selectedJurusan2->id,
@@ -128,7 +134,7 @@ class DataSeeder extends Seeder
                 'tanggal_daftar' => $tanggalDaftar,
                 'status' => $status,
                 'catatan_admin' => $status == 'ditolak' ? 'Maaf, berkas tidak lengkap dan nilai tidak memenuhi syarat.' : null,
-                'step_terakhir' => 5,
+                'step_terakhir' => 3,
                 'created_at' => $tanggalDaftar,
                 'updated_at' => now(),
             ]);
@@ -137,14 +143,14 @@ class DataSeeder extends Seeder
             DB::table('siswa')->insert([
                 'pendaftaran_id' => $pendaftaranId,
                 'nik' => '12' . rand(1000000000000, 9999999999999),
-                'nama_lengkap' => $user->nama_lengkap,
+                'nama_lengkap' => $student['nama_lengkap'],
                 'tempat_lahir' => 'Medan',
                 'tanggal_lahir' => Carbon::createFromDate(rand(2006, 2009), rand(1, 12), rand(1, 28)),
                 'jenis_kelamin' => $index % 2 == 0 ? 'Laki-laki' : 'Perempuan',
                 'agama' => $this->getRandomAgama(),
                 'alamat_lengkap' => $alamatList[$index % count($alamatList)],
                 'no_telepon' => '08' . rand(1000000000, 9999999999),
-                'email' => $user->email,
+                'email' => $student['email'],
                 'foto_path' => null,
                 'created_at' => $tanggalDaftar,
                 'updated_at' => now(),
@@ -202,13 +208,13 @@ class DataSeeder extends Seeder
                     'jumlah' => $periodeAktif->biaya_pendaftaran,
                     'metode_pembayaran' => 'transfer_bank',
                     'nama_bank' => 'BCA',
-                    'nama_pengirim' => $user->nama_lengkap,
+                    'nama_pengirim' => $student['nama_lengkap'],
                     'nomor_rekening' => rand(1000000000, 9999999999),
                     'bukti_pembayaran_path' => null,
                     'tanggal_bayar' => $tanggalDaftar->copy()->addDays(rand(1, 5)),
                     'status' => 'terverifikasi',
                     'catatan_admin' => null,
-                    'verified_by' => 11, // ID admin utama
+                    'verified_by' => $adminId,
                     'verified_at' => $tanggalDaftar->copy()->addDays(rand(6, 10)),
                     'created_at' => $tanggalDaftar,
                     'updated_at' => now(),
@@ -221,7 +227,7 @@ class DataSeeder extends Seeder
                         'jumlah' => $periodeAktif->biaya_pendaftaran,
                         'metode_pembayaran' => 'transfer_bank',
                         'nama_bank' => 'Mandiri',
-                        'nama_pengirim' => $user->nama_lengkap,
+                        'nama_pengirim' => $student['nama_lengkap'],
                         'nomor_rekening' => rand(1000000000, 9999999999),
                         'bukti_pembayaran_path' => null,
                         'tanggal_bayar' => $tanggalDaftar->copy()->addDays(rand(1, 3)),
@@ -239,7 +245,7 @@ class DataSeeder extends Seeder
             if ($status == 'ditolak') {
                 DB::table('verifikasi_log')->insert([
                     'pendaftaran_id' => $pendaftaranId,
-                    'admin_id' => 11,
+                    'admin_id' => $adminId,
                     'status_sebelum' => 'menunggu_verifikasi',
                     'status_sesudah' => 'ditolak',
                     'catatan' => 'Berkas tidak lengkap dan nilai rapor tidak memenuhi standar minimal.',
@@ -249,7 +255,7 @@ class DataSeeder extends Seeder
                 // Log penerimaan
                 DB::table('verifikasi_log')->insert([
                     'pendaftaran_id' => $pendaftaranId,
-                    'admin_id' => 11,
+                    'admin_id' => $adminId,
                     'status_sebelum' => 'menunggu_verifikasi',
                     'status_sesudah' => 'terverifikasi',
                     'catatan' => 'Berkas lengkap, nilai memenuhi syarat.',
@@ -258,7 +264,7 @@ class DataSeeder extends Seeder
 
                 DB::table('verifikasi_log')->insert([
                     'pendaftaran_id' => $pendaftaranId,
-                    'admin_id' => 11,
+                    'admin_id' => $adminId,
                     'status_sebelum' => 'terverifikasi',
                     'status_sesudah' => 'diterima',
                     'catatan' => 'Selamat! Anda diterima di jurusan ' . $selectedJurusan->nama_jurusan,

@@ -12,7 +12,7 @@ class Pendaftaran extends Model
     protected $table = 'pendaftaran';
 
     protected $fillable = [
-        'user_id',
+        'nama_lengkap',
         'pengaturan_ppdb_id',
         'jurusan_id',
         'jurusan_id_2',
@@ -38,11 +38,6 @@ class Pendaftaran extends Model
     const STATUS_CADANGAN = 'cadangan';
 
     // ── Relasi ──────────────────────────────────────────────
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function pengaturanPpdb(): BelongsTo
     {
@@ -170,7 +165,7 @@ class Pendaftaran extends Model
     {
         return [
             'nomor_pendaftaran' => $this->nomor_pendaftaran,
-            'nama_siswa' => $this->siswa?->nama_lengkap ?? 'Tidak ada data',
+            'nama_siswa' => $this->siswa?->nama_lengkap ?? $this->nama_lengkap ?? 'Tidak ada data',
             'status' => $this->label_status,
             'tanggal_daftar' => $this->tanggal_daftar?->format('d/m/Y'),
             'relasi_data' => [

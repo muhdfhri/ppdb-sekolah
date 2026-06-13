@@ -124,7 +124,7 @@
                         Kembali ke Daftar Pengumuman
                     </a>
                     @guest
-                        <a href="{{ route('register') }}"
+                        <a href="{{ route('pendaftaran') }}"
                             class="flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl font-bold text-sm text-white transition-all"
                             style="background-color: #018B3E; box-shadow: 0 8px 20px rgba(1,139,62,0.25);"
                             onmouseover="this.style.backgroundColor='#016b30';"

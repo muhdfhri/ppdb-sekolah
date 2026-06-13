@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('pendaftaran', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->string('nama_lengkap')->comment('Nama lengkap pendaftar');
             $table->foreignId('pengaturan_ppdb_id')->constrained('pengaturan_ppdb');
             $table->foreignId('jurusan_id')->constrained('jurusan');
             $table->foreignId('jurusan_id_2')->nullable()->constrained('jurusan');
@@ -25,7 +25,7 @@ return new class extends Migration {
                 'cadangan',
             ])->default('draft')->comment('Status pendaftaran');
             $table->text('catatan_admin')->nullable()->comment('Catatan dari admin saat verifikasi');
-            $table->unsignedTinyInteger('step_terakhir')->default(1)->comment('Step form terakhir yang diisi (1-5)');
+            $table->unsignedTinyInteger('step_terakhir')->default(1)->comment('Step form terakhir yang diisi (1-3)');
             $table->timestamps();
 
             // Indeks

@@ -122,7 +122,7 @@
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                     @forelse($pendaftaran ?? [] as $i => $p)
                         @php
-                            $nama = $p->siswa->nama_lengkap ?? $p->user->nama_lengkap ?? 'Tidak ada data';
+                            $nama = $p->nama_lengkap ?? $p->siswa->nama_lengkap ?? 'Tidak ada data';
                             $inisial = strtoupper(implode('', array_map(fn($w) => $w[0], array_slice(explode(' ', $nama), 0, 2))));
                             $statusConfig = [
                                 'diterima' => ['dot' => 'bg-green-500', 'text' => 'text-green-700', 'bg' => 'bg-green-50', 'label' => 'Diterima'],
@@ -147,7 +147,7 @@
                                     <div>
                                         <p class="text-sm font-bold">{{ $nama }}</p>
                                         <p class="text-[10px] text-slate-400">
-                                            {{ $p->siswa->tempat_lahir ?? $p->user->email ?? '' }}
+                                            {{ $p->siswa->tempat_lahir ?? '' }}
                                         </p>
                                     </div>
                                 </div>

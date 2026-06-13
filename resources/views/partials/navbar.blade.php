@@ -1,7 +1,7 @@
 {{-- resources/views/partials/navbar.blade.php --}}
 {{-- Tailwind CSS 4 + DaisyUI 5 --}}
 
-<header id="main-navbar" class="sticky top-0 z-50 w-full"
+<header id="main-navbar" class="sticky top-0 z-50 w-full" x-data="{ mobileMenuOpen: false }"
     style="background-color: #018B3E; color: white; box-shadow: 0 2px 16px rgba(0,0,0,0.12);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16 sm:h-20">
@@ -75,9 +75,9 @@
                         $user = Auth::user();
                         $initials = collect(explode(' ', $user->nama_lengkap ?? $user->name))
                             ->map(fn($w) => strtoupper($w[0]))->take(2)->join('');
-                        $dashboard = $user->isAdmin() ? route('admin.dashboard') : route('siswa.dashboard');
-                        $dashLabel = $user->isAdmin() ? 'Panel Admin' : 'Dashboard Saya';
-                        $dashIcon = $user->isAdmin() ? 'admin_panel_settings' : 'dashboard';
+                        $dashboard = route('admin.dashboard');
+                        $dashLabel = 'Panel Admin';
+                        $dashIcon = 'admin_panel_settings';
                     @endphp
 
                     <div class="hidden md:block relative" x-data="{ open: false }">
@@ -120,20 +120,7 @@
                                     onmouseout="this.style.backgroundColor='transparent';">
                                     <span class="material-symbols-outlined text-base">{{ $dashIcon }}</span>{{ $dashLabel }}
                                 </a>
-                                @if(!$user->isAdmin())
-                                    <a href="{{ route('siswa.pendaftaran.index') }}"
-                                        class="flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-slate-600 transition-colors"
-                                        onmouseover="this.style.backgroundColor='rgba(0,0,0,0.04)';"
-                                        onmouseout="this.style.backgroundColor='transparent';">
-                                        <span class="material-symbols-outlined text-base">assignment</span>Status Pendaftaran
-                                    </a>
-                                    <a href="{{ route('siswa.profil') }}"
-                                        class="flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-slate-600 transition-colors"
-                                        onmouseover="this.style.backgroundColor='rgba(0,0,0,0.04)';"
-                                        onmouseout="this.style.backgroundColor='transparent';">
-                                        <span class="material-symbols-outlined text-base">manage_accounts</span>Profil Saya
-                                    </a>
-                                @endif
+
                             </div>
                             <div class="border-t py-2" style="border-color:#f1f5f9;">
                                 <form method="POST" action="{{ route('logout') }}">
@@ -150,21 +137,52 @@
                     </div>
 
                 @else
-                    <a href="{{ route('register') }}"
+                    <a href="{{ route('pendaftaran') }}"
                         class="hidden sm:flex px-5 py-2 rounded-lg font-bold text-sm transition-all shadow-sm hover:brightness-110"
                         style="background-color:#F6CB04; color:#0f2318;">Daftar Sekarang</a>
-                    <a href="{{ route('login') }}"
-                        class="hidden sm:flex px-4 py-2 rounded-lg font-bold text-sm border transition-all"
-                        style="border-color:rgba(255,255,255,0.4); color:white;"
-                        onmouseover="this.style.backgroundColor='rgba(255,255,255,0.12)';"
-                        onmouseout="this.style.backgroundColor='transparent';">Masuk</a>
                 @endauth
 
                 {{-- Hamburger mobile --}}
-                <label for="mobile-drawer" class="md:hidden btn btn-ghost btn-sm p-1 text-white">
-                    <span class="material-symbols-outlined text-2xl">menu</span>
-                </label>
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden btn btn-ghost btn-sm p-1 text-white" aria-label="Toggle Menu">
+                    <span class="material-symbols-outlined text-2xl" x-text="mobileMenuOpen ? 'close' : 'menu'">menu</span>
+                </button>
             </div>
         </div>
+    </div>
+
+    {{-- Mobile Nav Menu (Alpine.js) --}}
+    <div x-show="mobileMenuOpen" 
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 -translate-y-4"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 -translate-y-4"
+         class="md:hidden border-t border-white/10"
+         style="background-color: #018B3E;"
+         x-cloak>
+         <nav class="flex flex-col px-4 py-4 gap-2">
+             <a href="{{ route('home') }}#beranda" @click="mobileMenuOpen = false" class="px-3 py-2 rounded-lg text-sm font-semibold text-white hover:bg-white/10 transition-colors">Beranda</a>
+             <a href="{{ route('home') }}#tentang" @click="mobileMenuOpen = false" class="px-3 py-2 rounded-lg text-sm font-semibold text-white hover:bg-white/10 transition-colors">Tentang</a>
+             <a href="{{ route('home') }}#syarat" @click="mobileMenuOpen = false" class="px-3 py-2 rounded-lg text-sm font-semibold text-white hover:bg-white/10 transition-colors">Syarat</a>
+             <a href="{{ route('home') }}#faq" @click="mobileMenuOpen = false" class="px-3 py-2 rounded-lg text-sm font-semibold text-white hover:bg-white/10 transition-colors">FAQ</a>
+             <a href="{{ route('pengumuman.publik') }}" @click="mobileMenuOpen = false" class="px-3 py-2 rounded-lg text-sm font-semibold text-white hover:bg-white/10 transition-colors">Pengumuman</a>
+             
+             @auth
+                 <div class="h-px bg-white/10 my-2"></div>
+                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold text-white hover:bg-white/10 transition-colors">
+                     <span class="material-symbols-outlined text-base">admin_panel_settings</span> Panel Admin
+                 </a>
+                 <form method="POST" action="{{ route('logout') }}" class="w-full">
+                     @csrf
+                     <button type="submit" class="w-full text-left flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold text-red-300 hover:bg-red-500/10 transition-colors">
+                         <span class="material-symbols-outlined text-base">logout</span> Keluar
+                     </button>
+                 </form>
+             @else
+                 <div class="h-px bg-white/10 my-2"></div>
+                 <a href="{{ route('pendaftaran') }}" class="flex items-center justify-center px-5 py-2.5 rounded-lg font-bold text-sm text-[#0f2318] hover:brightness-110 transition-all text-center" style="background-color:#F6CB04;">Daftar Sekarang</a>
+             @endauth
+         </nav>
     </div>
 </header>

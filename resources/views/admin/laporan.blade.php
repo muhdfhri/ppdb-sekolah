@@ -200,7 +200,7 @@
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                 @forelse($pendaftaran ?? [] as $i => $p)
                     @php
-                        $nama = $p->siswa->nama_lengkap ?? $p->user->nama_lengkap ?? 'Tidak Diketahui';
+                        $nama = $p->nama_lengkap ?? $p->siswa->nama_lengkap ?? 'Tidak Diketahui';
                         $inisial = $nama !== 'Tidak Diketahui'
                             ? strtoupper(implode('', array_map(fn($w) => $w[0], array_slice(explode(' ', $nama), 0, 2))))
                             : '??';

@@ -14,16 +14,14 @@ class PendaftaranService
      */
     public function buildQuery(array $filters = [])
     {
-        $query = Pendaftaran::with(['user', 'siswa', 'jurusan']);
+        $query = Pendaftaran::with(['siswa', 'jurusan']);
 
         // Search by name or registration number
         if (!empty($filters['search'])) {
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('nomor_pendaftaran', 'like', "%{$search}%")
-                    ->orWhereHas('user', function ($q2) use ($search) {
-                        $q2->where('nama_lengkap', 'like', "%{$search}%");
-                    })
+                    ->orWhere('nama_lengkap', 'like', "%{$search}%")
                     ->orWhereHas('siswa', function ($q2) use ($search) {
                         $q2->where('nama_lengkap', 'like', "%{$search}%");
                     });

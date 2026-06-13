@@ -123,7 +123,7 @@ class DashboardService
 
     public function getPendaftaranTerbaru(int $limit = 10)
     {
-        return Pendaftaran::with(['siswa', 'sekolahAsal', 'jurusan', 'user'])
+        return Pendaftaran::with(['siswa', 'sekolahAsal', 'jurusan'])
             ->latest('tanggal_daftar')
             ->limit($limit)
             ->get();

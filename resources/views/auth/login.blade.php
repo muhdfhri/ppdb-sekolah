@@ -118,14 +118,6 @@
                         <span class="material-symbols-outlined text-[20px]">login</span>
                     </button>
                 </form>
-
-                <div class="mt-8 pt-6 text-center" style="border-top: 1px solid rgba(1,139,62,0.1);">
-                    <p class="text-sm" style="color: #3a5a46;">
-                        Belum punya akun?
-                        <a href="{{ route('register') }}" class="font-bold hover:underline ml-1"
-                            style="color: #018B3E;">Daftar di sini</a>
-                    </p>
-                </div>
             </div>
         </div>
     </div>

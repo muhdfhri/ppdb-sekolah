@@ -1,47 +1,47 @@
-/* Import Tailwind */
+/* Import Tailwind CSS v4 */
 @import "tailwindcss";
 
-/* Plugin */
+/* Plugin Utama DaisyUI */
 @plugin "daisyui";
 
-/* Source paths */
+/* Source paths untuk Laravel + Vite */
 @source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
 @source "../../storage/framework/views/*.php";
 @source "../**/*.blade.php";
 
-/* Theme customization */
-@theme {
-    --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
-    --color-primary: #018B3E;
-    --color-secondary: #F6CB04;
-    --color-background-light: #F6F4F7;
-    --color-background-dark: #0f2318;
+/* ======= 1. DaisyUI 5 Theme Configuration ======= */
+/* Konfigurasi untuk komponen bawaan DaisyUI seperti checkbox, radio, dll */
+@plugin "daisyui/theme" {
+  name: "light";
+  --color-primary: #018B3E;      /* Hijau SMK NU II Medan */
+  --color-secondary: #F6CB04;    /* Kuning */
+  --color-base-100: #ffffff;
+  --color-base-200: #F6F4F7;
+  --color-base-300: #e2e8f0;
 }
 
-/* DaisyUI config */
+/* ======= 2. Theme Customization (Tailwind v4) ======= */
+/* Menggunakan prefix 'brand-' agar utility classes Tailwind tidak bentrok dengan DaisyUI */
+@theme {
+    --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+    
+    --color-brand-primary: #018B3E;
+    --color-brand-secondary: #F6CB04;
+    --color-background-light: #F6F4F7;
+}
+
+/* Kunci DaisyUI agar hanya memuat tema light (tidak ada dark mode) */
 @plugin "daisyui" {
     themes: light;
 }
 
-/* CSS Variables untuk DaisyUI */
-:root {
-    --p: 1 139 62;      /* Primary: #018B3E */
-    --pc: 255 255 255;  /* Primary Content: Putih */
-    --s: 246 203 4;     /* Secondary: #F6CB04 */
-    --sc: 31 41 55;     /* Secondary Content: Gelap */
-    --b1: 255 255 255;  /* Base 100: Putih */
-    --b2: 246 244 247;  /* Base 200: Background Light */
-    --rounded-box: 1rem;
-    --rounded-btn: 0.5rem;
-}
-
-/* Base styles */
+/* ======= 3. Base Styles ======= */
 @layer base {
     body {
         @apply font-sans bg-background-light text-slate-800 antialiased;
     }
-    
-    .dark body {
-        @apply bg-background-dark text-slate-100;
-    }
+}
+
+[x-cloak] {
+    display: none !important;
 }

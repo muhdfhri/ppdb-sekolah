@@ -54,25 +54,16 @@
                     Pengumuman
                 </a>
                 @auth
-                    @if(auth()->user()->role === 'siswa')
-                        <a href="{{ route('siswa.dashboard') }}" class="text-[#018B3E] hover:underline flex items-center gap-1">
-                            <span class="material-symbols-outlined text-base">dashboard</span>
-                            Dashboard Siswa
-                        </a>
-                    @elseif(auth()->user()->role === 'admin')
+                    @if(auth()->user()->role === 'admin')
                         <a href="{{ route('admin.dashboard') }}" class="text-[#018B3E] hover:underline flex items-center gap-1">
                             <span class="material-symbols-outlined text-base">admin_panel_settings</span>
                             Dashboard Admin
                         </a>
                     @endif
                 @else
-                    <a href="{{ route('login') }}" class="text-[#018B3E] hover:underline flex items-center gap-1">
-                        <span class="material-symbols-outlined text-base">login</span>
-                        Login
-                    </a>
-                    <a href="{{ route('register') }}" class="text-[#018B3E] hover:underline flex items-center gap-1">
+                    <a href="{{ route('pendaftaran') }}" class="text-[#018B3E] hover:underline flex items-center gap-1">
                         <span class="material-symbols-outlined text-base">how_to_reg</span>
-                        Daftar
+                        Daftar Sekarang
                     </a>
                 @endauth
             </div>

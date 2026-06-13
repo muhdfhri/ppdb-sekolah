@@ -253,7 +253,7 @@
                                                 @endphp
                                                 <tr class="hover:bg-slate-50 transition-colors seleksi-row"
                                                     data-status="{{ $daftar->status }}"
-                                                    data-search="{{ strtolower(($daftar->siswa->nama_lengkap ?? '') . ' ' . $daftar->nomor_pendaftaran) }}">
+                                                    data-search="{{ strtolower(($daftar->nama_lengkap ?? $daftar->siswa->nama_lengkap ?? '') . ' ' . $daftar->nomor_pendaftaran) }}">
                                                     <td class="px-5 py-4 text-slate-400 text-xs font-medium">
                                                         {{ $pendaftaran->firstItem() + $loop->index }}
                                                     </td>
@@ -262,7 +262,7 @@
                                                             class="font-mono text-xs font-semibold text-slate-700">{{ $daftar->nomor_pendaftaran }}</span>
                                                     </td>
                                                     <td class="px-5 py-4 font-semibold text-slate-900 text-sm">
-                                                        {{ $daftar->siswa->nama_lengkap ?? '—' }}
+                                                        {{ $daftar->nama_lengkap ?? $daftar->siswa->nama_lengkap ?? '—' }}
                                                     </td>
                                                     <td class="px-5 py-4 text-slate-500 text-xs hidden md:table-cell">
                                                         {{ $daftar->sekolahAsal->nama_sekolah ?? '—' }}
@@ -353,9 +353,9 @@
                     @php
                         $user = Auth::user();
                         $initials = collect(explode(' ', $user->nama_lengkap ?? $user->name))->map(fn($w) => strtoupper($w[0]))->take(2)->join('');
-                        $dashboard = $user->isAdmin() ? route('admin.dashboard') : route('siswa.dashboard');
-                        $dashLabel = $user->isAdmin() ? 'Panel Admin' : 'Dashboard Saya';
-                        $dashIcon = $user->isAdmin() ? 'admin_panel_settings' : 'dashboard';
+                        $dashboard = route('admin.dashboard');
+                        $dashLabel = 'Panel Admin';
+                        $dashIcon = 'admin_panel_settings';
                     @endphp
                     <div class="mx-4 mt-5 rounded-2xl p-4"
                         style="background-color:rgba(1,139,62,0.2); border:1px solid rgba(1,139,62,0.3);">
@@ -430,19 +430,11 @@
                             </button>
                         </form>
                     @else
-                        <a href="{{ route('register') }}"
+                        <a href="{{ route('pendaftaran') }}"
                             class="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-sm hover:brightness-110 transition-all"
                             style="background-color:#F6CB04; color:#0f2318;">
                             <span class="material-symbols-outlined text-xl">how_to_reg</span>
                             Daftar Sekarang
-                        </a>
-                        <a href="{{ route('login') }}"
-                            class="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-bold text-sm mt-3 transition-all"
-                            style="border:1.5px solid rgba(1,139,62,0.5); color:rgba(255,255,255,0.75);"
-                            onmouseover="this.style.borderColor='#018B3E';this.style.color='white';"
-                            onmouseout="this.style.borderColor='rgba(1,139,62,0.5)';this.style.color='rgba(255,255,255,0.75)';">
-                            <span class="material-symbols-outlined text-xl">login</span>
-                            Login
                         </a>
                     @endauth
                 </div>

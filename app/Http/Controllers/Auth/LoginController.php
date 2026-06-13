@@ -34,10 +34,12 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        // Redirect berdasarkan role
-        return Auth::user()->isAdmin()
-            ? redirect()->intended(route('admin.dashboard'))
-            : redirect()->intended(route('siswa.dashboard'));
+        if (!Auth::user()->isAdmin()) {
+            Auth::logout();
+            return redirect()->route('login')->withErrors(['email' => 'Akses ditolak. Hanya admin yang dapat masuk.']);
+        }
+
+        return redirect()->intended(route('admin.dashboard'));
     }
 
     public function logout(Request $request): RedirectResponse
