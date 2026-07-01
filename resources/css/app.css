@@ -15,6 +15,7 @@
   name: "light";
   --color-primary: #018B3E;      /* Hijau SMK NU II Medan */
   --color-secondary: #F6CB04;    /* Kuning */
+  --color-error: #F6CB04;        /* Gunakan warna kuning agar tidak ada pink */
   --color-base-100: #ffffff;
   --color-base-200: #F6F4F7;
   --color-base-300: #e2e8f0;
@@ -28,6 +29,7 @@
     --color-brand-primary: #018B3E;
     --color-brand-secondary: #F6CB04;
     --color-background-light: #F6F4F7;
+    --color-error: #F6CB04;        /* Gunakan warna kuning agar tidak ada pink */
 }
 
 /* Kunci DaisyUI agar hanya memuat tema light (tidak ada dark mode) */

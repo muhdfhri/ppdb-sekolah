@@ -197,6 +197,7 @@
         .dok-check {
             font-weight: 700;
             font-size: 10pt;
+            font-family: DejaVu Sans, sans-serif;
         }
 
         .dok-check.ok {

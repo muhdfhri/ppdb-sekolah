@@ -43,7 +43,7 @@
         @endif
         @if(session('error'))
             <div id="toast-error"
-                class="pointer-events-auto flex items-center gap-3 p-4 rounded-xl text-sm font-semibold text-white shadow-lg bg-error border border-error/20 transition-all duration-500">
+                class="pointer-events-auto flex items-center gap-3 p-4 rounded-xl text-sm font-semibold text-slate-900 shadow-lg bg-brand-secondary border border-brand-secondary/20 transition-all duration-500">
                 <span class="material-symbols-outlined text-lg shrink-0">warning</span>
                 <span class="flex-1">{{ session('error') }}</span>
                 <button onclick="document.getElementById('toast-error').remove()"
@@ -63,10 +63,10 @@
             const toastId = 'toast-' + Math.random().toString(36).substr(2, 9);
             const toast = document.createElement('div');
             toast.id = toastId;
-            toast.className = 'pointer-events-auto flex items-center gap-3 p-4 rounded-xl text-sm font-semibold text-white transition-all duration-500 shadow-lg';
+            toast.className = 'pointer-events-auto flex items-center gap-3 p-4 rounded-xl text-sm font-semibold transition-all duration-500 shadow-lg';
 
             if (type === 'success') {
-                toast.classList.add('bg-brand-primary', 'border', 'border-brand-primary/25');
+                toast.classList.add('bg-brand-primary', 'text-white', 'border', 'border-brand-primary/25');
                 toast.innerHTML = `
                     <span class="material-symbols-outlined text-lg shrink-0">check_circle</span>
                     <span class="flex-1">${message}</span>
@@ -75,7 +75,7 @@
                     </button>
                 `;
             } else {
-                toast.classList.add('bg-error', 'border', 'border-error/20');
+                toast.classList.add('bg-brand-secondary', 'text-slate-900', 'border', 'border-brand-secondary/20');
                 toast.innerHTML = `
                     <span class="material-symbols-outlined text-lg shrink-0">warning</span>
                     <span class="flex-1">${message}</span>

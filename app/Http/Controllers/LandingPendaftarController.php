@@ -120,6 +120,10 @@ class LandingPendaftarController extends Controller
             'akte_kelahiran.required' => 'File Akta Kelahiran wajib diupload.',
             'pas_foto.required' => 'Pas foto wajib diupload.',
             'bukti_pembayaran.required' => 'Bukti pembayaran wajib diupload.',
+            'alamat_lengkap.min' => 'Alamat lengkap minimal harus 10 karakter.',
+            'alamat_sekolah.min' => 'Alamat sekolah asal minimal harus 5 karakter.',
+            'nik_ayah.digits' => 'NIK ayah harus 16 digit.',
+            'nik_ibu.digits' => 'NIK ibu harus 16 digit.',
             '*.mimes' => 'Format file tidak didukung. Gunakan PDF, JPG, atau PNG.',
             '*.max' => 'Ukuran file maksimal 2MB.',
         ]);

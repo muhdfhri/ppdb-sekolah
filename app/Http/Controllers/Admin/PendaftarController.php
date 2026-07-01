@@ -32,7 +32,6 @@ class PendaftarController extends Controller
     public function show($id)
     {
         $pendaftaran = Pendaftaran::with([
-            'user',
             'siswa',
             'sekolahAsal',
             'orangTua',
