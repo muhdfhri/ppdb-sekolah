@@ -355,7 +355,7 @@
             <tr>
                 <td class="lbl">Tempat, Tgl Lahir</td>
                 <td class="val">{{ ($siswa?->tempat_lahir ?? '—') }},
-                    {{ $siswa?->tanggal_lahir?->translatedFormat('d M Y') ?? '—' }}
+                    {{ $siswa?->tanggal_lahir?->translatedFormat('d F Y') ?? '—' }}
                 </td>
             </tr>
             <tr>

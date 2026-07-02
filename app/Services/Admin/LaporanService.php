@@ -104,7 +104,7 @@ class LaporanService
                     'nik' => $p->siswa->nik ?? '—',
                     'nisn' => $p->sekolahAsal->nisn ?? '—',
                     'tempat_lahir' => $p->siswa->tempat_lahir ?? '—',
-                    'tanggal_lahir' => $p->siswa?->tanggal_lahir?->format('d/m/Y') ?? '—',
+                    'tanggal_lahir' => $p->siswa?->tanggal_lahir?->translatedFormat('d F Y') ?? '—',
                     'jenis_kelamin' => $p->siswa->jenis_kelamin ?? '—',
                     'asal_sekolah' => $p->sekolahAsal->nama_sekolah ?? '—',
                     'tahun_lulus' => $p->sekolahAsal->tahun_lulus ?? '—',
